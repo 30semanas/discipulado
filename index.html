@@ -660,10 +660,25 @@ function irPara(pagina) {
 }
 
 function sair() {
+  // Limpa listas visiveis antes de qualquer outra coisa
+  document.getElementById('lista-disciplos').innerHTML = '<div class="empty"><div class="empty-icon">🙏</div><h4>Carregando...</h4></div>';
+  document.getElementById('lista-discipuladores').innerHTML = '<div class="empty"><div class="empty-icon">👤</div><h4>Carregando...</h4></div>';
+  document.getElementById('tbody-todos').innerHTML = '';
+  document.getElementById('count-disciplos').textContent = '';
+  document.getElementById('count-disc').textContent = '';
+  document.getElementById('count-todos').textContent = '';
+
+  // Fecha qualquer modal aberto
+  document.querySelectorAll('.modal-overlay.open').forEach(m => fecharModal(m.id));
+
+  // Limpa estado completo
   estado = { discipulador: null, discipuloAtivo: null, acompAtivo: {}, adminSenha: null, todosDiscipulos: [], todosDiscipuladores: [] };
+
+  // Limpa campos de login
   document.getElementById('inp-codigo').value = '';
   document.getElementById('inp-admin-senha').value = '';
   document.getElementById('login-error').textContent = '';
+
   irPara('login');
 }
 
@@ -862,6 +877,10 @@ function limparFiltros() {
 async function carregarDiscipulos() {
   document.getElementById('disc-nome-welcome').textContent = estado.discipulador.nome.split(' ')[0];
   document.getElementById('disc-nome-topbar').textContent = estado.discipulador.nome;
+
+  // Limpa imediatamente antes de buscar os dados do novo discipulador
+  document.getElementById('lista-disciplos').innerHTML = '<div class="empty"><div class="empty-icon" style="font-size:28px;">⏳</div><h4>Carregando discípulos...</h4></div>';
+  document.getElementById('count-disciplos').textContent = '';
 
   const r = await api('listarDiscipulos', { discipuladorId: estado.discipulador.id });
   const lista = r.dados || [];
