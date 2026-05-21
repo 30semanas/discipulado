@@ -328,8 +328,9 @@ input[type="date"] { cursor: pointer; }
       <div class="form-group">
         <label>Código de Acesso <span class="req">*</span></label>
         <div class="pw-wrap">
-          <input type="password" id="inp-codigo" placeholder="Seu código secreto"
-            style="letter-spacing:.15em;" autocomplete="off">
+          <input type="password" id="inp-codigo" placeholder="Ex: JOAO2024"
+            style="text-transform:uppercase; letter-spacing:.1em;" autocomplete="off"
+            oninput="this.value=this.value.toUpperCase()">
           <button class="pw-toggle" type="button" onclick="togglePw('inp-codigo', this)">👁</button>
         </div>
       </div>
