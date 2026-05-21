@@ -743,12 +743,9 @@ input[type="date"] { cursor: pointer; }
 
 <script>
 // ════════════════════════════════════════════════
-//  CONFIGURAÇÃO — cole a URL do seu Web App aqui
+//  CONFIGURAÇÃO
 // ════════════════════════════════════════════════
 const API_URL = 'https://script.google.com/macros/s/AKfycbyjNiD2S3LVNGlF7ngmxgTkZRURAgua56jYifRb8I-8Purn9nqPbusKaCrYzv8CD4-U/exec';
-
-// Senha do administrador (pode mudar para algo mais seguro)
-const ADMIN_SENHA = 'admin@discipulado2024';
 
 // ════════════════════════════════════════════════
 //  ESTADO GLOBAL
@@ -756,7 +753,8 @@ const ADMIN_SENHA = 'admin@discipulado2024';
 let estado = {
   discipulador: null,
   discipuloAtivo: null,
-  acompAtivo: {}
+  acompAtivo: {},
+  adminSenha: null   // guardada apenas em memória durante a sessão
 };
 
 const ITENS_ACOMP = [
@@ -814,11 +812,24 @@ async function fazerLogin() {
   }
 }
 
-function fazerLoginAdmin() {
-  const senha = document.getElementById('inp-admin-senha').value;
-  if (senha !== ADMIN_SENHA) { mostrarErroLogin('Senha incorreta.'); return; }
-  irPara('admin');
-  carregarDiscipuladores();
+async function fazerLoginAdmin() {
+  const senha = document.getElementById('inp-admin-senha').value.trim();
+  if (!senha) { mostrarErroLogin('Informe a senha.'); return; }
+
+  const btnAdmin = document.querySelector('#login-admin-form .btn-primary');
+  const orig = btnAdmin.textContent;
+  btnAdmin.innerHTML = '<span class="spinner"></span>';
+  try {
+    const r = await api('loginAdmin', { senha });
+    if (!r.ok) { mostrarErroLogin(r.msg || 'Senha incorreta.'); return; }
+    estado.adminSenha = senha;   // guarda em memória para reenviar nas ações protegidas
+    irPara('admin');
+    carregarDiscipuladores();
+  } catch(e) {
+    mostrarErroLogin('Erro de conexão. Verifique a URL da API.');
+  } finally {
+    btnAdmin.textContent = orig;
+  }
 }
 
 function mostrarErroLogin(msg) {
@@ -837,7 +848,7 @@ function irPara(pagina) {
 }
 
 function sair() {
-  estado = { discipulador: null, discipuloAtivo: null, acompAtivo: {} };
+  estado = { discipulador: null, discipuloAtivo: null, acompAtivo: {}, adminSenha: null };
   document.getElementById('inp-codigo').value = '';
   document.getElementById('inp-admin-senha').value = '';
   document.getElementById('login-error').textContent = '';
@@ -848,7 +859,7 @@ function sair() {
 //  ADMIN — DISCIPULADORES
 // ════════════════════════════════════════════════
 async function carregarDiscipuladores() {
-  const r = await api('listarDiscipuladores');
+  const r = await api('listarDiscipuladores', { adminSenha: estado.adminSenha });
   const lista = r.dados || [];
   document.getElementById('count-disc').textContent = lista.length + ' discipuladores';
 
@@ -886,7 +897,7 @@ async function salvarDiscipulador() {
 
   if (!nome || !codigo) { toast('Preencha nome e código.', true); return; }
 
-  const r = await api('cadastrarDiscipulador', { nome, email, codigoChave: codigo });
+  const r = await api('cadastrarDiscipulador', { nome, email, codigoChave: codigo, adminSenha: estado.adminSenha });
   if (!r.ok) { toast(r.msg || 'Erro ao salvar.', true); return; }
 
   toast('Discipulador cadastrado com sucesso!');
