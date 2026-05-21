@@ -774,12 +774,13 @@ const ITENS_ACOMP = [
 //  API
 // ════════════════════════════════════════════════
 async function api(acao, body = {}) {
-  const resp = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ acao, ...body })
-  });
-  return resp.json();
+  // Apps Script requer GET com payload em base64 para evitar CORS preflight
+  const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ acao, ...body }))));
+  const url = API_URL + '?payload=' + encodeURIComponent(payload);
+  const resp = await fetch(url, { method: 'GET', redirect: 'follow' });
+  const text = await resp.text();
+  try { return JSON.parse(text); }
+  catch(e) { console.error('Resposta inválida:', text); throw new Error('Resposta inválida do servidor'); }
 }
 
 // ════════════════════════════════════════════════
