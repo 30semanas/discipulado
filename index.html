@@ -5,374 +5,218 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sistema de Discipulado</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-:root {
-  --bg: #F5F3EE;
-  --surface: #FFFFFF;
-  --surface2: #F0EDE6;
-  --primary: #2D5016;
-  --primary-light: #4A7C28;
-  --primary-pale: #EBF2E3;
-  --gold: #8B6914;
-  --gold-pale: #FDF4DC;
-  --text: #1C1C1A;
-  --text2: #5A5A54;
-  --text3: #9A9A90;
-  --border: #D8D4CA;
-  --danger: #A32D2D;
-  --danger-pale: #FCEBEB;
-  --success: #1D9E75;
-  --success-pale: #E1F5EE;
-  --warning: #BA7517;
-  --warning-pale: #FAEEDA;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --shadow: 0 2px 12px rgba(0,0,0,0.07);
-  --shadow-md: 0 4px 24px rgba(0,0,0,0.10);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; }
-h1, h2, h3 { font-family: 'Playfair Display', serif; }
-
-/* ── PAGES ── */
-.page { display: none; min-height: 100vh; }
-.page.active { display: block; }
-
-/* ── LOGIN ── */
-#page-login {
-  display: none; align-items: center; justify-content: center;
-  background: linear-gradient(145deg, #2D5016 0%, #1a3009 100%);
-}
-#page-login.active { display: flex; }
-
-.login-box {
-  background: var(--surface); border-radius: 20px; padding: 48px 40px;
-  width: 100%; max-width: 400px; box-shadow: var(--shadow-md); text-align: center;
-}
-.login-logo {
-  width: 64px; height: 64px; background: var(--primary-pale); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 24px; font-size: 28px;
-}
-.login-box h1 { font-size: 26px; color: var(--primary); margin-bottom: 6px; }
-.login-box > p { color: var(--text2); font-size: 14px; margin-bottom: 32px; }
-
-.login-tabs {
-  display: flex; border: 1px solid var(--border);
-  border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 28px;
-}
-.login-tab {
-  flex: 1; padding: 10px; font-size: 13px; font-family: 'DM Sans', sans-serif;
-  background: none; border: none; cursor: pointer; color: var(--text2);
-  font-weight: 500; transition: all .2s;
-}
-.login-tab.active { background: var(--primary); color: #fff; }
-
-.form-group { margin-bottom: 18px; text-align: left; }
-label {
-  display: block; font-size: 12px; font-weight: 600; letter-spacing: .05em;
-  text-transform: uppercase; color: var(--text2); margin-bottom: 6px;
-}
-.req { color: var(--danger); margin-left: 2px; }
-
-input, select, textarea {
-  width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
-  font-size: 15px; background: var(--surface); color: var(--text);
-  transition: border-color .2s; outline: none;
-}
-input:focus, select:focus, textarea:focus { border-color: var(--primary); }
-input.invalid { border-color: var(--danger); }
-textarea { resize: vertical; min-height: 90px; }
-
-/* password-wrapper para campo com olho */
-.pw-wrap { position: relative; }
-.pw-wrap input { padding-right: 42px; }
-.pw-toggle {
-  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-  background: none; border: none; cursor: pointer; color: var(--text3);
-  font-size: 18px; line-height: 1; padding: 4px;
-}
-.pw-toggle:hover { color: var(--text2); }
-
-.btn {
-  padding: 12px 24px; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
-  font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all .15s;
-}
-.btn-primary { background: var(--primary); color: #fff; width: 100%; }
-.btn-primary:hover { background: var(--primary-light); }
-.btn-ghost { background: none; border: 1.5px solid var(--border); color: var(--text2); }
-.btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
-.btn-sm { padding: 8px 16px; font-size: 13px; }
-.btn-danger { background: var(--danger); color: #fff; }
-
-.error-msg { color: var(--danger); font-size: 13px; margin-top: 10px; text-align: center; }
-
-/* ── TOPBAR ── */
-.topbar {
-  background: var(--primary); color: #fff; padding: 0 32px; height: 60px;
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 100;
-}
-.topbar-title { font-family: 'Playfair Display', serif; font-size: 18px; }
-.topbar-right { display: flex; align-items: center; gap: 12px; }
-.topbar-tabs { display: flex; gap: 4px; }
-.topbar-tab {
-  background: rgba(255,255,255,.1); border: none; color: rgba(255,255,255,.75);
-  padding: 7px 16px; border-radius: 6px; font-family: 'DM Sans', sans-serif;
-  font-size: 13px; cursor: pointer; transition: all .15s;
-}
-.topbar-tab.active, .topbar-tab:hover { background: rgba(255,255,255,.22); color: #fff; }
-.btn-topbar {
-  background: rgba(255,255,255,.15); border: none; color: #fff;
-  padding: 7px 16px; border-radius: 6px; font-family: 'DM Sans', sans-serif;
-  font-size: 13px; cursor: pointer; transition: background .15s;
-}
-.btn-topbar:hover { background: rgba(255,255,255,.25); }
-
-/* ── ADMIN ── */
-#page-admin { padding: 0; }
-.admin-content { padding: 28px 32px; max-width: 1100px; margin: 0 auto; }
-.admin-tab-panel { display: none; }
-.admin-tab-panel.active { display: block; }
-
-.section-header {
-  display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;
-}
-.section-header h2 { font-size: 22px; color: var(--primary); }
-
-/* ── FILTROS ── */
-.filtros {
-  display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 16px;
-}
-.filtros input, .filtros select { flex: 1; min-width: 160px; margin: 0; }
-.filtros .btn { flex: 0 0 auto; width: auto; }
-
-/* ── TABELA DISCÍPULOS ── */
-.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
-table.dtable { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--surface); }
-table.dtable th {
-  background: var(--surface2); font-size: 11px; font-weight: 700; letter-spacing: .05em;
-  text-transform: uppercase; color: var(--text2); padding: 10px 14px; text-align: left;
-  border-bottom: 1px solid var(--border);
-}
-table.dtable td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
-table.dtable tr:last-child td { border-bottom: none; }
-table.dtable tr:hover td { background: var(--surface2); cursor: pointer; }
-
-/* ── CARDS DISCIPULADORES ── */
-.disc-item {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 20px; border-radius: var(--radius-sm); background: var(--surface);
-  border: 1px solid var(--border); margin-bottom: 10px; transition: box-shadow .15s;
-}
-.disc-item:hover { box-shadow: var(--shadow); }
-.disc-info { display: flex; align-items: center; gap: 14px; }
-
-.avatar {
-  width: 42px; height: 42px; border-radius: 50%; background: var(--primary-pale);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 14px; color: var(--primary); flex-shrink: 0;
-}
-.disc-name { font-weight: 600; font-size: 15px; }
-.disc-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
-
-.badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; }
-.badge-code { background: var(--primary-pale); color: var(--primary); font-family: monospace; font-size: 13px; letter-spacing: .1em; padding: 4px 12px; }
-
-/* ── DISC AREA ── */
-#page-disc { padding: 0; }
-.disc-topbar {
-  background: var(--primary); color: #fff; padding: 0 24px; height: 60px;
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 100;
-}
-.disc-area { padding: 24px; max-width: 1000px; margin: 0 auto; }
-
-.welcome-card {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-  color: #fff; border-radius: var(--radius); padding: 28px; margin-bottom: 28px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.welcome-text h2 { font-size: 20px; margin-bottom: 4px; }
-.welcome-text p { font-size: 14px; opacity: .8; }
-
-.disciplo-card {
-  background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border);
-  overflow: hidden; margin-bottom: 14px; cursor: pointer; transition: box-shadow .15s, transform .1s;
-}
-.disciplo-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
-.disciplo-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; }
-.disciplo-info { display: flex; align-items: center; gap: 14px; }
-
-/* ── MODAL ── */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200;
-  display: flex; align-items: center; justify-content: center; padding: 20px;
-  opacity: 0; pointer-events: none; transition: opacity .2s;
-}
-.modal-overlay.open { opacity: 1; pointer-events: auto; }
-.modal {
-  background: var(--surface); border-radius: 16px; width: 100%; max-width: 640px;
-  max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 48px rgba(0,0,0,.18);
-  transform: translateY(16px); transition: transform .2s;
-}
-.modal-overlay.open .modal { transform: translateY(0); }
-.modal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 22px 26px 16px; position: sticky; top: 0; background: var(--surface);
-  z-index: 10; border-bottom: 1px solid var(--border);
-}
-.modal-header h3 { font-size: 19px; color: var(--primary); }
-.btn-close {
-  background: none; border: none; cursor: pointer; font-size: 22px;
-  color: var(--text3); line-height: 1; padding: 4px 8px; border-radius: 6px; transition: background .15s;
-}
-.btn-close:hover { background: var(--surface2); color: var(--text); }
-.modal-body { padding: 24px 26px; }
-.modal-footer {
-  padding: 16px 26px; border-top: 1px solid var(--border);
-  display: flex; justify-content: flex-end; gap: 10px;
-  position: sticky; bottom: 0; background: var(--surface);
-}
-
-/* ── ACOMPANHAMENTO ── */
-.acomp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-@media (max-width: 600px) { .acomp-grid { grid-template-columns: 1fr; } }
-.acomp-item { border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 14px; }
-.acomp-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.acomp-item-title { font-weight: 600; font-size: 13px; }
-.status-badge { padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; }
-.status-nao { background: #E8E8E8; color: #666; }
-.status-em  { background: var(--warning-pale); color: var(--warning); }
-.status-ok  { background: var(--success-pale); color: var(--success); }
-.date-row { display: flex; gap: 10px; margin-top: 8px; }
-.date-col { flex: 1; }
-.date-col label { font-size: 11px; margin-bottom: 4px; }
-.date-col input { padding: 7px 10px; font-size: 13px; }
-
-/* ── ENCONTROS / TREINAMENTOS ── */
-.encontro-item {
-  border-left: 3px solid var(--primary); padding: 12px 16px;
-  background: var(--surface2); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 10px;
-}
-.encontro-date { font-size: 11px; color: var(--text3); margin-bottom: 4px; font-weight: 600; }
-.encontro-desc { font-size: 14px; color: var(--text); line-height: 1.6; }
-
-.trein-item {
-  border-left: 3px solid var(--gold); padding: 12px 16px;
-  background: var(--gold-pale); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 10px;
-}
-.trein-header { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
-.trein-tipo { font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: .05em; }
-.trein-date { font-size: 11px; color: var(--text3); }
-.trein-desc { font-size: 14px; color: var(--text); line-height: 1.6; }
-
-/* ── TABS ── */
-.tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
-.tab-btn {
-  padding: 10px 18px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-  background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer;
-  color: var(--text2); margin-bottom: -1px; transition: all .15s;
-}
-.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
-
-/* ── MISC ── */
-.spinner {
-  display: inline-block; width: 16px; height: 16px;
-  border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
-  border-radius: 50%; animation: spin .6s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.empty { text-align: center; padding: 40px 20px; color: var(--text3); }
-.empty-icon { font-size: 40px; margin-bottom: 12px; }
-.empty h4 { color: var(--text2); font-size: 16px; margin-bottom: 6px; }
-.empty p { font-size: 14px; }
-
-#toast {
-  position: fixed; bottom: 24px; right: 24px; background: var(--primary); color: #fff;
-  padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
-  z-index: 999; opacity: 0; pointer-events: none; transform: translateY(8px);
-  transition: all .25s; max-width: 320px;
-}
-#toast.show { opacity: 1; transform: translateY(0); }
-#toast.error { background: var(--danger); }
-
-.text-sm { font-size: 13px; }
-.text-muted { color: var(--text2); }
-.mt-1 { margin-top: 8px; }
-input[type="date"] { cursor: pointer; }
-input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear,
-input[type="password"]::-webkit-credentials-auto-fill-button { display: none !important; }
+:root{--bg:#F5F3EE;--surface:#FFF;--surface2:#F0EDE6;--primary:#2D5016;--primary-light:#4A7C28;--primary-pale:#EBF2E3;--gold:#8B6914;--gold-pale:#FDF4DC;--text:#1C1C1A;--text2:#5A5A54;--text3:#9A9A90;--border:#D8D4CA;--danger:#A32D2D;--danger-pale:#FCEBEB;--success:#1D9E75;--success-pale:#E1F5EE;--warning:#BA7517;--warning-pale:#FAEEDA;--radius:12px;--radius-sm:8px;--shadow:0 2px 12px rgba(0,0,0,.07);--shadow-md:0 4px 24px rgba(0,0,0,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
+h1,h2,h3{font-family:'Playfair Display',serif}
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+#page-login{display:none;align-items:center;justify-content:center;background:linear-gradient(145deg,#2D5016,#1a3009)}
+#page-login.active{display:flex}
+.login-box{background:var(--surface);border-radius:20px;padding:48px 40px;width:100%;max-width:400px;box-shadow:var(--shadow-md);text-align:center}
+.login-logo{width:64px;height:64px;background:var(--primary-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:28px}
+.login-box h1{font-size:26px;color:var(--primary);margin-bottom:6px}
+.login-box>p{color:var(--text2);font-size:14px;margin-bottom:32px}
+.login-tabs{display:flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:28px}
+.login-tab{flex:1;padding:10px;font-size:13px;font-family:'DM Sans',sans-serif;background:none;border:none;cursor:pointer;color:var(--text2);font-weight:500;transition:all .2s}
+.login-tab.active{background:var(--primary);color:#fff}
+.form-group{margin-bottom:18px;text-align:left}
+label{display:block;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text2);margin-bottom:6px}
+.req{color:var(--danger);margin-left:2px}
+input,select,textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:15px;background:var(--surface);color:var(--text);transition:border-color .2s;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--primary)}
+textarea{resize:vertical;min-height:90px}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:42px}
+.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;line-height:1;padding:4px}
+.pw-toggle:hover{color:var(--text2)}
+.btn{padding:12px 24px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+.btn-primary{background:var(--primary);color:#fff;width:100%}
+.btn-primary:hover{background:var(--primary-light)}
+.btn-ghost{background:none;border:1.5px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary)}
+.btn-success{background:var(--success);color:#fff}
+.btn-success:hover{background:#158a63}
+.btn-sm{padding:8px 16px;font-size:13px}
+.error-msg{color:var(--danger);font-size:13px;margin-top:10px;text-align:center}
+/* topbar */
+.topbar{background:var(--primary);color:#fff;padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-title{font-family:'Playfair Display',serif;font-size:18px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-tabs{display:flex;gap:4px}
+.topbar-tab{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.75);padding:7px 14px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .15s}
+.topbar-tab.active,.topbar-tab:hover{background:rgba(255,255,255,.22);color:#fff}
+.btn-topbar{background:rgba(255,255,255,.15);border:none;color:#fff;padding:7px 14px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:background .15s}
+.btn-topbar:hover{background:rgba(255,255,255,.28)}
+.btn-topbar-success{background:rgba(29,158,117,.5)}
+.btn-topbar-success:hover{background:rgba(29,158,117,.75)}
+/* admin */
+#page-admin{padding:0}
+.admin-content{padding:28px 32px;max-width:1200px;margin:0 auto}
+.admin-tab-panel{display:none}
+.admin-tab-panel.active{display:block}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.section-header h2{font-size:22px;color:var(--primary)}
+.section-actions{display:flex;gap:8px;align-items:center}
+/* filtros */
+.filtros{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.filtros input,.filtros select{flex:1;min-width:160px;margin:0}
+.filtros .btn{flex:0 0 auto;width:auto}
+/* tabela */
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
+table.dtable{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface)}
+table.dtable th{background:var(--surface2);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text2);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+table.dtable td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--text)}
+table.dtable tr:last-child td{border-bottom:none}
+table.dtable tr.clickable:hover td{background:var(--primary-pale);cursor:pointer}
+/* disc cards */
+.disc-item{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--border);margin-bottom:10px;transition:box-shadow .15s}
+.disc-item:hover{box-shadow:var(--shadow)}
+.disc-info{display:flex;align-items:center;gap:14px}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--primary-pale);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--primary);flex-shrink:0}
+.disc-name{font-weight:600;font-size:15px}
+.disc-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-code{background:var(--primary-pale);color:var(--primary);font-family:monospace;font-size:13px;letter-spacing:.1em;padding:4px 12px}
+/* dashboard */
+.dash-filter{display:flex;gap:10px;align-items:center;margin-bottom:24px;flex-wrap:wrap}
+.dash-filter select{flex:1;min-width:220px;max-width:360px;margin:0}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;text-align:center}
+.kpi-num{font-size:30px;font-weight:700;color:var(--primary);line-height:1}
+.kpi-label{font-size:12px;color:var(--text2);margin-top:6px}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.chart-grid{grid-template-columns:1fr}}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.chart-card h3{font-size:15px;color:var(--primary);margin-bottom:16px}
+/* disc area */
+#page-disc{padding:0}
+.disc-topbar{background:var(--primary);color:#fff;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.disc-area{padding:24px;max-width:1000px;margin:0 auto}
+.welcome-card{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border-radius:var(--radius);padding:28px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between}
+.welcome-text h2{font-size:20px;margin-bottom:4px}
+.welcome-text p{font-size:14px;opacity:.8}
+.disciplo-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;margin-bottom:14px;cursor:pointer;transition:box-shadow .15s,transform .1s}
+.disciplo-card:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.disciplo-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px}
+.disciplo-info{display:flex;align-items:center;gap:14px}
+/* modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal{background:var(--surface);border-radius:16px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 48px rgba(0,0,0,.18);transform:translateY(16px);transition:transform .2s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:22px 26px 16px;position:sticky;top:0;background:var(--surface);z-index:10;border-bottom:1px solid var(--border)}
+.modal-header h3{font-size:19px;color:var(--primary)}
+.modal-header-sub{font-size:13px;color:var(--text2);margin-top:2px}
+.btn-close{background:none;border:none;cursor:pointer;font-size:22px;color:var(--text3);line-height:1;padding:4px 8px;border-radius:6px;transition:background .15s}
+.btn-close:hover{background:var(--surface2);color:var(--text)}
+.modal-body{padding:24px 26px}
+.modal-footer{padding:16px 26px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:var(--surface)}
+/* acomp */
+.acomp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+@media(max-width:600px){.acomp-grid{grid-template-columns:1fr}}
+.acomp-item{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px}
+.acomp-item-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.acomp-item-title{font-weight:600;font-size:13px}
+.status-badge{padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700}
+.status-nao{background:#E8E8E8;color:#666}
+.status-em{background:var(--warning-pale);color:var(--warning)}
+.status-ok{background:var(--success-pale);color:var(--success)}
+.date-row{display:flex;gap:10px;margin-top:8px}
+.date-col{flex:1}
+.date-col label{font-size:11px;margin-bottom:4px}
+.date-col input{padding:7px 10px;font-size:13px}
+/* encontros/trein */
+.encontro-item{border-left:3px solid var(--primary);padding:12px 16px;background:var(--surface2);border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:10px}
+.encontro-date{font-size:11px;color:var(--text3);margin-bottom:4px;font-weight:600}
+.encontro-desc{font-size:14px;color:var(--text);line-height:1.6}
+.trein-item{border-left:3px solid var(--gold);padding:12px 16px;background:var(--gold-pale);border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:10px}
+.trein-header{display:flex;gap:8px;align-items:center;margin-bottom:4px}
+.trein-tipo{font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.05em}
+.trein-date{font-size:11px;color:var(--text3)}
+.trein-desc{font-size:14px;color:var(--text);line-height:1.6}
+/* tabs */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:20px}
+.tab-btn{padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--text2);margin-bottom:-1px;transition:all .15s}
+.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+/* misc */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty h4{color:var(--text2);font-size:16px;margin-bottom:6px}
+.empty p{font-size:14px}
+#toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:#fff;padding:12px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;z-index:999;opacity:0;pointer-events:none;transform:translateY(8px);transition:all .25s;max-width:320px}
+#toast.show{opacity:1;transform:translateY(0)}
+#toast.error{background:var(--danger)}
+.text-sm{font-size:13px}
+.text-muted{color:var(--text2)}
+.mt-1{margin-top:8px}
+input[type="date"]{cursor:pointer}
+input[type="password"]::-ms-reveal,input[type="password"]::-ms-clear,input[type="password"]::-webkit-credentials-auto-fill-button{display:none!important}
+/* readonly acomp (modo admin) */
+.acomp-readonly .date-col input{background:var(--surface2);color:var(--text2);cursor:default;pointer-events:none}
+.acomp-readonly .acomp-save-btn{display:none}
 </style>
 </head>
 <body>
 
-<!-- ══════════════ PÁGINA: LOGIN ══════════════ -->
+<!-- LOGIN -->
 <div id="page-login" class="page active">
   <div class="login-box">
     <div class="login-logo">✝</div>
     <h1>Discipulado</h1>
     <p>Sistema de acompanhamento de discípulos</p>
-
     <div class="login-tabs">
-      <button class="login-tab active" onclick="switchLoginTab('disc', this)">Discipulador</button>
-      <button class="login-tab" onclick="switchLoginTab('admin', this)">Administrador</button>
+      <button class="login-tab active" onclick="switchLoginTab('disc',this)">Discipulador</button>
+      <button class="login-tab" onclick="switchLoginTab('admin',this)">Administrador</button>
     </div>
-
-    <!-- Tab Discipulador -->
     <div id="login-disc-form">
       <div class="form-group">
         <label>Código de Acesso <span class="req">*</span></label>
         <div class="pw-wrap">
-          <input type="password" id="inp-codigo" placeholder="************"
-            style="text-transform:uppercase; letter-spacing:.1em;" autocomplete="off"
-            oninput="this.value=this.value.toUpperCase()">
-          <button class="pw-toggle" type="button" onclick="togglePw('inp-codigo', this)">👁</button>
+          <input type="password" id="inp-codigo" placeholder="************" style="text-transform:uppercase;letter-spacing:.1em;" autocomplete="off" oninput="this.value=this.value.toUpperCase()">
+          <button class="pw-toggle" type="button" onclick="togglePw('inp-codigo',this)">👁</button>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="fazerLogin()">
-        <span id="btn-login-text">Entrar na Área de Discipulado</span>
-      </button>
+      <button class="btn btn-primary" onclick="fazerLogin()"><span id="btn-login-text">Entrar na Área de Discipulado</span></button>
     </div>
-
-    <!-- Tab Admin -->
     <div id="login-admin-form" style="display:none">
       <div class="form-group">
         <label>Senha do Administrador <span class="req">*</span></label>
         <div class="pw-wrap">
           <input type="password" id="inp-admin-senha" placeholder="••••••••" autocomplete="off">
-          <button class="pw-toggle" type="button" onclick="togglePw('inp-admin-senha', this)">👁</button>
+          <button class="pw-toggle" type="button" onclick="togglePw('inp-admin-senha',this)">👁</button>
         </div>
       </div>
       <button class="btn btn-primary" id="btn-admin-login" onclick="fazerLoginAdmin()">Entrar como Administrador</button>
     </div>
-
     <p id="login-error" class="error-msg"></p>
-    <p style="margin-top:20px; font-size:12px; color:var(--text3);">Não tem código? Fale com seu administrador.</p>
+    <p style="margin-top:20px;font-size:12px;color:var(--text3)">Não tem código? Fale com seu administrador.</p>
   </div>
 </div>
 
-<!-- ══════════════ PÁGINA: ADMIN ══════════════ -->
+<!-- ADMIN -->
 <div id="page-admin" class="page">
   <div class="topbar">
     <span class="topbar-title">✝ Administração</span>
     <div class="topbar-tabs">
-      <button class="topbar-tab active" onclick="switchAdminTab('discipuladores', this)">Discipuladores</button>
-      <button class="topbar-tab" onclick="switchAdminTab('disciplos', this)">Todos os Discípulos</button>
+      <button class="topbar-tab active" onclick="switchAdminTab('discipuladores',this)">Discipuladores</button>
+      <button class="topbar-tab" onclick="switchAdminTab('disciplos',this)">Discípulos</button>
+      <button class="topbar-tab" onclick="switchAdminTab('dashboard',this)">Dashboard</button>
     </div>
     <div class="topbar-right">
+      <button class="btn-topbar btn-topbar-success" id="btn-exportar-disc" onclick="exportarDiscipuladores()" style="display:none">⬇ Discipuladores</button>
+      <button class="btn-topbar btn-topbar-success" id="btn-exportar-todos" onclick="exportarDiscipulos()" style="display:none">⬇ Discípulos</button>
       <button class="btn-topbar" id="btn-novo-admin" onclick="abrirModalCadDisc()">+ Novo Discipulador</button>
       <button class="btn-topbar" onclick="sair()">Sair</button>
     </div>
   </div>
-
   <div class="admin-content">
 
     <!-- Aba: Discipuladores -->
@@ -381,9 +225,7 @@ input[type="password"]::-webkit-credentials-auto-fill-button { display: none !im
         <h2>Discipuladores</h2>
         <span id="count-disc" class="text-sm text-muted"></span>
       </div>
-      <div id="lista-discipuladores">
-        <div class="empty"><div class="empty-icon">👤</div><h4>Carregando...</h4></div>
-      </div>
+      <div id="lista-discipuladores"><div class="empty"><div class="empty-icon">👤</div><h4>Carregando...</h4></div></div>
     </div>
 
     <!-- Aba: Todos os Discípulos -->
@@ -392,44 +234,43 @@ input[type="password"]::-webkit-credentials-auto-fill-button { display: none !im
         <h2>Todos os Discípulos</h2>
         <span id="count-todos" class="text-sm text-muted"></span>
       </div>
-
       <div class="filtros">
         <input type="text" id="f-nome" placeholder="🔍 Buscar por nome..." oninput="aplicarFiltros()">
-        <select id="f-discipulador" onchange="aplicarFiltros()">
-          <option value="">Todos os discipuladores</option>
-        </select>
-        <select id="f-eklesia" onchange="aplicarFiltros()">
-          <option value="">Todas as eklesías</option>
-        </select>
+        <select id="f-discipulador" onchange="aplicarFiltros()"><option value="">Todos os discipuladores</option></select>
+        <select id="f-eklesia" onchange="aplicarFiltros()"><option value="">Todas as eklesías</option></select>
         <button class="btn btn-ghost btn-sm" onclick="limparFiltros()">Limpar</button>
       </div>
-
       <div class="table-wrap">
         <table class="dtable">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Contato</th>
-              <th>Aniversário</th>
-              <th>Eklesia</th>
-              <th>Discipulador</th>
-              <th>Cadastro</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Nome</th><th>Contato</th><th>Aniversário</th><th>Eklesia</th><th>Discipulador</th><th>Cadastro</th></tr></thead>
           <tbody id="tbody-todos"></tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- Aba: Dashboard -->
+    <div id="atab-dashboard" class="admin-tab-panel">
+      <div class="section-header"><h2>Dashboard</h2></div>
+      <div class="dash-filter">
+        <label style="text-transform:none;font-size:14px;font-weight:500;color:var(--text2);white-space:nowrap">Filtrar por discipulador:</label>
+        <select id="dash-f-disc" onchange="renderizarDashboard()"><option value="">Todos</option></select>
+      </div>
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <div class="chart-grid">
+        <div class="chart-card"><h3>Conclusões por Etapa</h3><canvas id="chart-etapas" height="260"></canvas></div>
+        <div class="chart-card"><h3>Status Geral da Trilha</h3><canvas id="chart-status" height="260"></canvas></div>
       </div>
     </div>
 
   </div>
 </div>
 
-<!-- ══════════════ PÁGINA: DISCIPULADOR ══════════════ -->
+<!-- DISCIPULADOR -->
 <div id="page-disc" class="page">
   <div class="disc-topbar">
-    <span style="font-family:'Playfair Display',serif; font-size:17px;">✝ Discipulado</span>
-    <div style="display:flex; align-items:center; gap:12px;">
-      <span id="disc-nome-topbar" style="font-size:14px; opacity:.85;"></span>
+    <span style="font-family:'Playfair Display',serif;font-size:17px">✝ Discipulado</span>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span id="disc-nome-topbar" style="font-size:14px;opacity:.85"></span>
       <button class="btn-topbar" onclick="sair()">Sair</button>
     </div>
   </div>
@@ -439,43 +280,29 @@ input[type="password"]::-webkit-credentials-auto-fill-button { display: none !im
         <h2>Olá, <span id="disc-nome-welcome"></span>! 🙏</h2>
         <p>Gerencie seus discípulos e acompanhe o crescimento de cada um.</p>
       </div>
-      <button class="btn" style="background:rgba(255,255,255,.2); color:#fff; border:1px solid rgba(255,255,255,.3);"
-        onclick="abrirModalCadDiscipulo()">+ Novo Discípulo</button>
+      <button class="btn" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)" onclick="abrirModalCadDiscipulo()">+ Novo Discípulo</button>
     </div>
     <div class="section-header">
-      <h2 style="font-size:19px; color:var(--primary);">Meus Discípulos</h2>
+      <h2 style="font-size:19px;color:var(--primary)">Meus Discípulos</h2>
       <span id="count-disciplos" class="text-sm text-muted"></span>
     </div>
-    <div id="lista-disciplos">
-      <div class="empty"><div class="empty-icon">🙏</div><h4>Carregando...</h4></div>
-    </div>
+    <div id="lista-disciplos"><div class="empty"><div class="empty-icon">🙏</div><h4>Carregando...</h4></div></div>
   </div>
 </div>
 
-<!-- ══════════════ MODAIS ══════════════ -->
-
-<!-- Modal: Cadastrar Discipulador -->
+<!-- MODAIS -->
+<!-- Cadastrar Discipulador -->
 <div id="modal-cad-disc" class="modal-overlay">
   <div class="modal">
-    <div class="modal-header">
-      <h3>Novo Discipulador</h3>
-      <button class="btn-close" onclick="fecharModal('modal-cad-disc')">×</button>
-    </div>
+    <div class="modal-header"><h3>Novo Discipulador</h3><button class="btn-close" onclick="fecharModal('modal-cad-disc')">×</button></div>
     <div class="modal-body">
-      <div class="form-group">
-        <label>Nome Completo <span class="req">*</span></label>
-        <input type="text" id="cad-disc-nome" placeholder="Nome do discipulador">
-      </div>
-      <div class="form-group">
-        <label>E-mail</label>
-        <input type="email" id="cad-disc-email" placeholder="email@exemplo.com">
-      </div>
+      <div class="form-group"><label>Nome Completo <span class="req">*</span></label><input type="text" id="cad-disc-nome" placeholder="Nome do discipulador"></div>
+      <div class="form-group"><label>E-mail</label><input type="email" id="cad-disc-email" placeholder="email@exemplo.com"></div>
       <div class="form-group">
         <label>Código de Acesso <span class="req">*</span></label>
-        <div style="display:flex; gap:8px;">
-          <input type="text" id="cad-disc-codigo" placeholder="Gerado automaticamente" style="text-transform:uppercase; font-family:monospace; letter-spacing:.1em;"
-            oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')">
-          <button type="button" class="btn btn-ghost btn-sm" style="white-space:nowrap; flex-shrink:0;" onclick="gerarCodigoAcesso()">🔄 Novo</button>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="cad-disc-codigo" placeholder="Gerado automaticamente" style="text-transform:uppercase;font-family:monospace;letter-spacing:.1em" oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')">
+          <button type="button" class="btn btn-ghost btn-sm" style="white-space:nowrap;flex-shrink:0" onclick="gerarCodigoAcesso()">🔄 Novo</button>
         </div>
         <p class="text-sm text-muted mt-1">Gerado automaticamente. Você pode editar se quiser.</p>
       </div>
@@ -487,31 +314,15 @@ input[type="password"]::-webkit-credentials-auto-fill-button { display: none !im
   </div>
 </div>
 
-<!-- Modal: Cadastrar Discípulo -->
+<!-- Cadastrar Discípulo -->
 <div id="modal-cad-disciplo" class="modal-overlay">
   <div class="modal">
-    <div class="modal-header">
-      <h3>Novo Discípulo</h3>
-      <button class="btn-close" onclick="fecharModal('modal-cad-disciplo')">×</button>
-    </div>
+    <div class="modal-header"><h3>Novo Discípulo</h3><button class="btn-close" onclick="fecharModal('modal-cad-disciplo')">×</button></div>
     <div class="modal-body">
-      <div class="form-group">
-        <label>Nome Completo <span class="req">*</span></label>
-        <input type="text" id="disciplo-nome" placeholder="Nome completo do discípulo">
-      </div>
-      <div class="form-group">
-        <label>Contato <span class="req">*</span></label>
-        <input type="tel" id="disciplo-contato" placeholder="(00) 00000-0000" maxlength="15"
-          oninput="mascararTelefone(this)">
-      </div>
-      <div class="form-group">
-        <label>Data de Aniversário <span class="req">*</span></label>
-        <input type="date" id="disciplo-aniversario">
-      </div>
-      <div class="form-group">
-        <label>Eklesia</label>
-        <input type="text" id="disciplo-eklesia" placeholder="Ex: Eklesia Centro">
-      </div>
+      <div class="form-group"><label>Nome Completo <span class="req">*</span></label><input type="text" id="disciplo-nome" placeholder="Nome completo do discípulo"></div>
+      <div class="form-group"><label>Contato <span class="req">*</span></label><input type="tel" id="disciplo-contato" placeholder="(00) 00000-0000" maxlength="15" oninput="mascararTelefone(this)"></div>
+      <div class="form-group"><label>Data de Aniversário <span class="req">*</span></label><input type="date" id="disciplo-aniversario"></div>
+      <div class="form-group"><label>Eklesia</label><input type="text" id="disciplo-eklesia" placeholder="Ex: Eklesia Centro"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost btn-sm" onclick="fecharModal('modal-cad-disciplo')">Cancelar</button>
@@ -520,63 +331,39 @@ input[type="password"]::-webkit-credentials-auto-fill-button { display: none !im
   </div>
 </div>
 
-<!-- Modal: Perfil do Discípulo -->
+<!-- Perfil do Discípulo (discipulador + admin) -->
 <div id="modal-perfil" class="modal-overlay">
-  <div class="modal" style="max-width:720px;">
+  <div class="modal" style="max-width:720px">
     <div class="modal-header">
-      <div>
-        <h3 id="perfil-nome"></h3>
-        <p id="perfil-sub" style="font-size:13px; color:var(--text2); margin-top:2px;"></p>
-      </div>
+      <div><h3 id="perfil-nome"></h3><p class="modal-header-sub" id="perfil-sub"></p></div>
       <button class="btn-close" onclick="fecharModal('modal-perfil')">×</button>
     </div>
     <div class="modal-body">
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('acomp', this)">Trilha</button>
-        <button class="tab-btn" onclick="switchTab('encontros', this)">Encontros DP</button>
-        <button class="tab-btn" onclick="switchTab('treinamentos', this)">Treinamentos e Leituras</button>
+        <button class="tab-btn active" onclick="switchTab('acomp',this)">Trilha</button>
+        <button class="tab-btn" onclick="switchTab('encontros',this)">Encontros DP</button>
+        <button class="tab-btn" onclick="switchTab('treinamentos',this)">Treinamentos e Leituras</button>
       </div>
-
       <div id="tab-acomp" class="tab-panel active">
         <div class="acomp-grid" id="acomp-grid"></div>
-        <div style="text-align:right; margin-top:8px;">
-          <button class="btn btn-primary btn-sm" style="width:auto" onclick="salvarAcompanhamento()">Salvar Trilha</button>
+        <div id="acomp-save-wrap" style="text-align:right;margin-top:8px">
+          <button class="btn btn-primary btn-sm acomp-save-btn" style="width:auto" onclick="salvarAcompanhamento()">Salvar Trilha</button>
         </div>
       </div>
-
       <div id="tab-encontros" class="tab-panel">
-        <div class="form-group">
-          <label>Data do Encontro <span class="req">*</span></label>
-          <input type="date" id="enc-data">
-        </div>
-        <div class="form-group">
-          <label>Descrição <span class="req">*</span></label>
-          <textarea id="enc-desc" placeholder="Descreva o que foi conversado, orado, estudado..."></textarea>
-        </div>
-        <div style="text-align:right; margin-bottom:20px;">
-          <button class="btn btn-primary btn-sm" style="width:auto" onclick="salvarEncontro()">Registrar Encontro</button>
+        <div id="enc-form-wrap">
+          <div class="form-group"><label>Data do Encontro <span class="req">*</span></label><input type="date" id="enc-data"></div>
+          <div class="form-group"><label>Descrição <span class="req">*</span></label><textarea id="enc-desc" placeholder="Descreva o que foi conversado, orado, estudado..."></textarea></div>
+          <div style="text-align:right;margin-bottom:20px"><button class="btn btn-primary btn-sm" style="width:auto" onclick="salvarEncontro()">Registrar Encontro</button></div>
         </div>
         <div id="lista-encontros"></div>
       </div>
-
       <div id="tab-treinamentos" class="tab-panel">
-        <div class="form-group">
-          <label>Tipo <span class="req">*</span></label>
-          <select id="trein-tipo">
-            <option value="Treinamento Ministerial">Treinamento Ministerial</option>
-            <option value="Leitura">Leitura</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Data <span class="req">*</span></label>
-          <input type="date" id="trein-data">
-        </div>
-        <div class="form-group">
-          <label>Descrição / Título do Livro <span class="req">*</span></label>
-          <textarea id="trein-desc" placeholder="Nome do livro lido, tema do treinamento..."></textarea>
-        </div>
-        <div style="text-align:right; margin-bottom:20px;">
-          <button class="btn btn-primary btn-sm" style="width:auto" onclick="salvarTreinamento()">Registrar</button>
+        <div id="trein-form-wrap">
+          <div class="form-group"><label>Tipo <span class="req">*</span></label><select id="trein-tipo"><option value="Treinamento Ministerial">Treinamento Ministerial</option><option value="Leitura">Leitura</option></select></div>
+          <div class="form-group"><label>Data <span class="req">*</span></label><input type="date" id="trein-data"></div>
+          <div class="form-group"><label>Descrição / Título do Livro <span class="req">*</span></label><textarea id="trein-desc" placeholder="Nome do livro lido, tema do treinamento..."></textarea></div>
+          <div style="text-align:right;margin-bottom:20px"><button class="btn btn-primary btn-sm" style="width:auto" onclick="salvarTreinamento()">Registrar</button></div>
         </div>
         <div id="lista-treinamentos"></div>
       </div>
@@ -587,525 +374,448 @@ input[type="password"]::-webkit-credentials-auto-fill-button { display: none !im
 <div id="toast"></div>
 
 <script>
-// ════════════════════════════════════════════════
-//  CONFIGURAÇÃO
-// ════════════════════════════════════════════════
-const API_URL = 'https://script.google.com/macros/s/AKfycbyjNiD2S3LVNGlF7ngmxgTkZRURAgua56jYifRb8I-8Purn9nqPbusKaCrYzv8CD4-U/exec';
+const API_URL='https://script.google.com/macros/s/AKfycbyjNiD2S3LVNGlF7ngmxgTkZRURAgua56jYifRb8I-8Purn9nqPbusKaCrYzv8CD4-U/exec';
 
-// ════════════════════════════════════════════════
-//  ESTADO GLOBAL
-// ════════════════════════════════════════════════
-let estado = {
-  discipulador: null,
-  discipuloAtivo: null,
-  acompAtivo: {},
-  adminSenha: null,
-  todosDiscipulos: [],
-  todosDiscipuladores: []
-};
+let estado={discipulador:null,discipuloAtivo:null,acompAtivo:{},adminSenha:null,todosDiscipulos:[],todosDiscipuladores:[],acompanhamentos:{},chartEtapas:null,chartStatus:null,modoAdmin:false};
 
-const ITENS_ACOMP = [
-  { key: 'Batismo',         label: 'Batismo' },
-  { key: 'BemVindo',        label: 'Bem-vindo à Família' },
-  { key: 'VidaPropósito',   label: 'Vida com Propósito' },
-  { key: 'VidaSatisfeita',  label: 'Vida Satisfeita' },
-  { key: 'TrintaSemanas',   label: '30 Semanas' },
-  { key: 'CulturaIgreja',   label: 'Cultura da Igreja' },
-  { key: 'FundamentosFé',   label: 'Fundamentos da Fé' },
-  { key: 'Restauração',     label: 'Restauração' },
-  { key: 'Feminina',        label: 'Feminina' },
-  { key: 'CursoLiderança',  label: 'Curso Liderança de GDC' }
+const ITENS_ACOMP=[
+  {key:'Batismo',label:'Batismo'},
+  {key:'BemVindo',label:'Bem-vindo à Família'},
+  {key:'VidaPropósito',label:'Vida com Propósito'},
+  {key:'VidaSatisfeita',label:'Vida Satisfeita'},
+  {key:'TrintaSemanas',label:'30 Semanas'},
+  {key:'CulturaIgreja',label:'Cultura da Igreja'},
+  {key:'FundamentosFé',label:'Fundamentos da Fé'},
+  {key:'Restauração',label:'Restauração'},
+  {key:'Feminina',label:'Feminina'},
+  {key:'CursoLiderança',label:'Curso Liderança de GDC'}
 ];
 
-// ════════════════════════════════════════════════
-//  API
-// ════════════════════════════════════════════════
-async function api(acao, body = {}) {
-  const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ acao, ...body }))));
-  const url = API_URL + '?payload=' + encodeURIComponent(payload);
-  const resp = await fetch(url, { method: 'GET', redirect: 'follow' });
-  const text = await resp.text();
-  try { return JSON.parse(text); }
-  catch(e) { console.error('Resposta inválida:', text); throw new Error('Resposta inválida do servidor'); }
+// ── API ──
+async function api(acao,body={}){
+  const payload=btoa(unescape(encodeURIComponent(JSON.stringify({acao,...body}))));
+  const url=API_URL+'?payload='+encodeURIComponent(payload);
+  const resp=await fetch(url,{method:'GET',redirect:'follow'});
+  const text=await resp.text();
+  try{return JSON.parse(text);}catch(e){throw new Error('Resposta inválida: '+text.slice(0,120));}
 }
 
-// ════════════════════════════════════════════════
-//  MÁSCARA TELEFONE
-// ════════════════════════════════════════════════
-function mascararTelefone(el) {
-  let v = el.value.replace(/\D/g, '').slice(0, 11);
-  if (v.length <= 10) {
-    v = v.replace(/^(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-  } else {
-    v = v.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
-  }
-  el.value = v.replace(/-$/, '');
-}
+// ── UTILS ──
+function mascararTelefone(el){let v=el.value.replace(/\D/g,'').slice(0,11);v=v.length<=10?v.replace(/^(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3'):v.replace(/^(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');el.value=v.replace(/-$/,'');}
+function togglePw(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁':'🙈';}
+function irPara(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');}
+function iniciais(n){if(!n)return'?';return n.split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');}
+function formatarDataBR(d){if(!d)return'—';const p=String(d).split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:d;}
+function hoje(){return new Date().toISOString().split('T')[0];}
+let toastTimer;
+function toast(msg,erro=false){const el=document.getElementById('toast');el.textContent=msg;el.className='show'+(erro?' error':'');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.className='',3200);}
 
-// ════════════════════════════════════════════════
-//  TOGGLE SENHA
-// ════════════════════════════════════════════════
-function togglePw(inputId, btn) {
-  const inp = document.getElementById(inputId);
-  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
-  else { inp.type = 'password'; btn.textContent = '👁'; }
-}
-
-// ════════════════════════════════════════════════
-//  NAVEGAÇÃO
-// ════════════════════════════════════════════════
-function irPara(pagina) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + pagina).classList.add('active');
-}
-
-function sair() {
-  // Limpa listas visiveis antes de qualquer outra coisa
-  document.getElementById('lista-disciplos').innerHTML = '<div class="empty"><div class="empty-icon">🙏</div><h4>Carregando...</h4></div>';
-  document.getElementById('lista-discipuladores').innerHTML = '<div class="empty"><div class="empty-icon">👤</div><h4>Carregando...</h4></div>';
-  document.getElementById('tbody-todos').innerHTML = '';
-  document.getElementById('count-disciplos').textContent = '';
-  document.getElementById('count-disc').textContent = '';
-  document.getElementById('count-todos').textContent = '';
-
-  // Fecha qualquer modal aberto
-  document.querySelectorAll('.modal-overlay.open').forEach(m => fecharModal(m.id));
-
-  // Limpa estado completo
-  estado = { discipulador: null, discipuloAtivo: null, acompAtivo: {}, adminSenha: null, todosDiscipulos: [], todosDiscipuladores: [] };
-
-  // Limpa campos de login
-  document.getElementById('inp-codigo').value = '';
-  document.getElementById('inp-admin-senha').value = '';
-  document.getElementById('login-error').textContent = '';
-
+// ── SAIR ──
+function sair(){
+  document.getElementById('lista-disciplos').innerHTML='<div class="empty"><div class="empty-icon">🙏</div><h4>Carregando...</h4></div>';
+  document.getElementById('lista-discipuladores').innerHTML='<div class="empty"><div class="empty-icon">👤</div><h4>Carregando...</h4></div>';
+  document.getElementById('tbody-todos').innerHTML='';
+  ['count-disciplos','count-disc','count-todos'].forEach(id=>document.getElementById(id).textContent='');
+  document.querySelectorAll('.modal-overlay.open').forEach(m=>fecharModal(m.id));
+  if(estado.chartEtapas){estado.chartEtapas.destroy();estado.chartEtapas=null;}
+  if(estado.chartStatus){estado.chartStatus.destroy();estado.chartStatus=null;}
+  estado={discipulador:null,discipuloAtivo:null,acompAtivo:{},adminSenha:null,todosDiscipulos:[],todosDiscipuladores:[],acompanhamentos:{},chartEtapas:null,chartStatus:null,modoAdmin:false};
+  document.getElementById('inp-codigo').value='';
+  document.getElementById('inp-admin-senha').value='';
+  document.getElementById('login-error').textContent='';
   irPara('login');
 }
 
-// ════════════════════════════════════════════════
-//  LOGIN
-// ════════════════════════════════════════════════
-function switchLoginTab(tab, btn) {
-  document.querySelectorAll('.login-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('login-disc-form').style.display  = tab === 'disc'  ? 'block' : 'none';
-  document.getElementById('login-admin-form').style.display = tab === 'admin' ? 'block' : 'none';
-  document.getElementById('login-error').textContent = '';
+// ── LOGIN ──
+function switchLoginTab(tab,btn){
+  document.querySelectorAll('.login-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('login-disc-form').style.display=tab==='disc'?'block':'none';
+  document.getElementById('login-admin-form').style.display=tab==='admin'?'block':'none';
+  document.getElementById('login-error').textContent='';
 }
-
-async function fazerLogin() {
-  const codigo = document.getElementById('inp-codigo').value.trim().toUpperCase();
-  if (!codigo) { mostrarErroLogin('Informe o código de acesso.'); return; }
-  const btn = document.getElementById('btn-login-text');
-  btn.innerHTML = '<span class="spinner"></span>';
-  try {
-    const r = await api('loginDiscipulador', { codigo });
-    if (!r.ok) { mostrarErroLogin(r.msg || 'Código inválido.'); return; }
-    estado.discipulador = r.discipulador;
-    irPara('disc');
-    carregarDiscipulos();
-  } catch(e) { mostrarErroLogin('Erro de conexão. Verifique a URL da API.'); }
-  finally { btn.textContent = 'Entrar na Área de Discipulado'; }
+async function fazerLogin(){
+  const codigo=document.getElementById('inp-codigo').value.trim().toUpperCase();
+  if(!codigo){mostrarErroLogin('Informe o código de acesso.');return;}
+  const btn=document.getElementById('btn-login-text');btn.innerHTML='<span class="spinner"></span>';
+  try{const r=await api('loginDiscipulador',{codigo});if(!r.ok){mostrarErroLogin(r.msg||'Código inválido.');return;}
+    estado.discipulador=r.discipulador;estado.modoAdmin=false;irPara('disc');carregarDiscipulos();
+  }catch(e){mostrarErroLogin('Erro de conexão.');}
+  finally{btn.textContent='Entrar na Área de Discipulado';}
 }
-
-async function fazerLoginAdmin() {
-  const senha = document.getElementById('inp-admin-senha').value.trim();
-  if (!senha) { mostrarErroLogin('Informe a senha.'); return; }
-  const btn = document.getElementById('btn-admin-login');
-  const orig = btn.textContent;
-  btn.innerHTML = '<span class="spinner"></span>';
-  try {
-    const r = await api('loginAdmin', { senha });
-    if (!r.ok) { mostrarErroLogin(r.msg || 'Senha incorreta.'); return; }
-    estado.adminSenha = senha;
-    irPara('admin');
-    switchAdminTab('discipuladores', document.querySelector('.topbar-tab'));
+async function fazerLoginAdmin(){
+  const senha=document.getElementById('inp-admin-senha').value.trim();
+  if(!senha){mostrarErroLogin('Informe a senha.');return;}
+  const btn=document.getElementById('btn-admin-login');const orig=btn.textContent;btn.innerHTML='<span class="spinner"></span>';
+  try{const r=await api('loginAdmin',{senha});if(!r.ok){mostrarErroLogin(r.msg||'Senha incorreta.');return;}
+    estado.adminSenha=senha;estado.modoAdmin=true;irPara('admin');
+    switchAdminTab('discipuladores',document.querySelector('.topbar-tab'));
     carregarDiscipuladores();
-  } catch(e) { mostrarErroLogin('Erro de conexão. Verifique a URL da API.'); }
-  finally { btn.textContent = orig; }
+  }catch(e){mostrarErroLogin('Erro de conexão.');}
+  finally{btn.textContent=orig;}
+}
+function mostrarErroLogin(msg){document.getElementById('login-error').textContent=msg;}
+document.getElementById('inp-codigo').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});
+document.getElementById('inp-admin-senha').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLoginAdmin();});
+
+// ── ADMIN TABS ──
+function switchAdminTab(tab,btn){
+  document.querySelectorAll('.topbar-tab').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');
+  document.querySelectorAll('.admin-tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('atab-'+tab).classList.add('active');
+  document.getElementById('btn-novo-admin').style.display=tab==='discipuladores'?'block':'none';
+  document.getElementById('btn-exportar-disc').style.display=tab==='discipuladores'?'block':'none';
+  document.getElementById('btn-exportar-todos').style.display=tab==='disciplos'?'block':'none';
+  if(tab==='disciplos')carregarTodosDiscipulos();
+  if(tab==='dashboard')carregarDashboard();
 }
 
-function mostrarErroLogin(msg) { document.getElementById('login-error').textContent = msg; }
-
-document.getElementById('inp-codigo').addEventListener('keydown', e => { if(e.key==='Enter') fazerLogin(); });
-document.getElementById('inp-admin-senha').addEventListener('keydown', e => { if(e.key==='Enter') fazerLoginAdmin(); });
-
-// ════════════════════════════════════════════════
-//  ADMIN TABS
-// ════════════════════════════════════════════════
-function switchAdminTab(tab, btn) {
-  document.querySelectorAll('.topbar-tab').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  document.querySelectorAll('.admin-tab-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('atab-' + tab).classList.add('active');
-  document.getElementById('btn-novo-admin').style.display = tab === 'discipuladores' ? 'block' : 'none';
-  if (tab === 'disciplos') carregarTodosDiscipulos();
-}
-
-// ════════════════════════════════════════════════
-//  ADMIN — DISCIPULADORES
-// ════════════════════════════════════════════════
-async function carregarDiscipuladores() {
-  const r = await api('listarDiscipuladores', { adminSenha: estado.adminSenha });
-  const lista = r.dados || [];
-  estado.todosDiscipuladores = lista;
-  document.getElementById('count-disc').textContent = lista.length + ' discipuladores';
-
-  const el = document.getElementById('lista-discipuladores');
-  if (!lista.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">👤</div><h4>Nenhum discipulador cadastrado</h4><p>Clique em "+ Novo Discipulador" para começar.</p></div>`;
-    return;
-  }
-  el.innerHTML = lista.map(d => `
+// ── ADMIN: DISCIPULADORES ──
+async function carregarDiscipuladores(){
+  const r=await api('listarDiscipuladores',{adminSenha:estado.adminSenha});
+  const lista=r.dados||[];estado.todosDiscipuladores=lista;
+  document.getElementById('count-disc').textContent=lista.length+' discipuladores';
+  const el=document.getElementById('lista-discipuladores');
+  if(!lista.length){el.innerHTML='<div class="empty"><div class="empty-icon">👤</div><h4>Nenhum discipulador cadastrado</h4><p>Clique em "+ Novo Discipulador" para começar.</p></div>';return;}
+  el.innerHTML=lista.map(d=>`
     <div class="disc-item">
       <div class="disc-info">
         <div class="avatar">${iniciais(d.Nome)}</div>
-        <div>
-          <div class="disc-name">${d.Nome}</div>
-          <div class="disc-sub">${d.Email || 'Sem e-mail'} · Cadastrado em ${formatarDataBR(d.DataCadastro)}</div>
-        </div>
+        <div><div class="disc-name">${d.Nome}</div><div class="disc-sub">${d.Email||'Sem e-mail'} · Cadastrado em ${formatarDataBR(d.DataCadastro)}</div></div>
       </div>
       <span class="badge badge-code">${d.CodigoChave}</span>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function gerarCodigoAcesso() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let cod = '';
-  for (let i = 0; i < 8; i++) cod += chars[Math.floor(Math.random() * chars.length)];
-  document.getElementById('cad-disc-codigo').value = cod;
+function gerarCodigoAcesso(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let cod='';for(let i=0;i<8;i++)cod+=c[Math.floor(Math.random()*c.length)];document.getElementById('cad-disc-codigo').value=cod;}
+function abrirModalCadDisc(){document.getElementById('cad-disc-nome').value='';document.getElementById('cad-disc-email').value='';gerarCodigoAcesso();abrirModal('modal-cad-disc');}
+async function salvarDiscipulador(){
+  const nome=document.getElementById('cad-disc-nome').value.trim();
+  const email=document.getElementById('cad-disc-email').value.trim();
+  const codigo=document.getElementById('cad-disc-codigo').value.trim().toUpperCase();
+  if(!nome||!codigo){toast('Preencha nome e código.',true);return;}
+  const r=await api('cadastrarDiscipulador',{nome,email,codigoChave:codigo,adminSenha:estado.adminSenha});
+  if(!r.ok){toast(r.msg||'Erro ao salvar.',true);return;}
+  toast('Discipulador cadastrado!');fecharModal('modal-cad-disc');carregarDiscipuladores();
 }
 
-function abrirModalCadDisc() {
-  document.getElementById('cad-disc-nome').value = '';
-  document.getElementById('cad-disc-email').value = '';
-  gerarCodigoAcesso();
-  abrirModal('modal-cad-disc');
-}
-
-async function salvarDiscipulador() {
-  const nome   = document.getElementById('cad-disc-nome').value.trim();
-  const email  = document.getElementById('cad-disc-email').value.trim();
-  const codigo = document.getElementById('cad-disc-codigo').value.trim().toUpperCase();
-  if (!nome || !codigo) { toast('Preencha nome e código.', true); return; }
-  const r = await api('cadastrarDiscipulador', { nome, email, codigoChave: codigo, adminSenha: estado.adminSenha });
-  if (!r.ok) { toast(r.msg || 'Erro ao salvar.', true); return; }
-  toast('Discipulador cadastrado!');
-  fecharModal('modal-cad-disc');
-  carregarDiscipuladores();
-}
-
-// ════════════════════════════════════════════════
-//  ADMIN — TODOS OS DISCÍPULOS
-// ════════════════════════════════════════════════
-async function carregarTodosDiscipulos() {
-  document.getElementById('tbody-todos').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">Carregando...</td></tr>';
-  // Busca discípulos de todos os discipuladores
-  const rDisc = await api('listarDiscipuladores', { adminSenha: estado.adminSenha });
-  const discipuladores = rDisc.dados || [];
-  estado.todosDiscipuladores = discipuladores;
-
-  // Popula filtro de discipuladores
-  const selDisc = document.getElementById('f-discipulador');
-  selDisc.innerHTML = '<option value="">Todos os discipuladores</option>' +
-    discipuladores.map(d => `<option value="${d.ID}">${d.Nome}</option>`).join('');
-
-  // Busca todos os discípulos
-  let todos = [];
-  for (const disc of discipuladores) {
-    const r = await api('listarDiscipulos', { discipuladorId: disc.ID });
-    const lista = (r.dados || []).map(d => ({ ...d, _discipuladorNome: disc.Nome }));
-    todos = todos.concat(lista);
+// ── ADMIN: TODOS OS DISCÍPULOS ──
+async function carregarTodosDiscipulos(){
+  document.getElementById('tbody-todos').innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">Carregando...</td></tr>';
+  const rDisc=await api('listarDiscipuladores',{adminSenha:estado.adminSenha});
+  const discipuladores=rDisc.dados||[];estado.todosDiscipuladores=discipuladores;
+  const selDisc=document.getElementById('f-discipulador');
+  selDisc.innerHTML='<option value="">Todos os discipuladores</option>'+discipuladores.map(d=>`<option value="${d.ID}">${d.Nome}</option>`).join('');
+  let todos=[];
+  for(const disc of discipuladores){
+    const r=await api('listarDiscipulos',{discipuladorId:disc.ID});
+    todos=todos.concat((r.dados||[]).map(d=>({...d,_discipuladorNome:disc.Nome})));
   }
-  estado.todosDiscipulos = todos;
-  document.getElementById('count-todos').textContent = todos.length + ' discípulos';
-
-  // Popula filtro de eklesia
-  const eklesías = [...new Set(todos.map(d => d.Eklesia).filter(Boolean))].sort();
-  const selEk = document.getElementById('f-eklesia');
-  selEk.innerHTML = '<option value="">Todas as eklesías</option>' +
-    eklesías.map(e => `<option value="${e}">${e}</option>`).join('');
-
+  estado.todosDiscipulos=todos;
+  document.getElementById('count-todos').textContent=todos.length+' discípulos';
+  const eklesías=[...new Set(todos.map(d=>d.Eklesia).filter(Boolean))].sort();
+  document.getElementById('f-eklesia').innerHTML='<option value="">Todas as eklesías</option>'+eklesías.map(e=>`<option value="${e}">${e}</option>`).join('');
   renderizarTabela(todos);
 }
 
-function renderizarTabela(lista) {
-  const tbody = document.getElementById('tbody-todos');
-  if (!lista.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">Nenhum resultado encontrado.</td></tr>';
-    return;
-  }
-  tbody.innerHTML = lista.map(d => `
-    <tr>
+function renderizarTabela(lista){
+  const tbody=document.getElementById('tbody-todos');
+  if(!lista.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">Nenhum resultado encontrado.</td></tr>';return;}
+  tbody.innerHTML=lista.map(d=>`
+    <tr class="clickable" onclick="abrirPerfilAdmin(${JSON.stringify(d).replace(/"/g,'&quot;')})">
       <td><strong>${d.NomeCompleto}</strong></td>
-      <td>${d.Contato || '—'}</td>
-      <td>${d.DataAniversario ? formatarDataBR(d.DataAniversario) : '—'}</td>
-      <td>${d.Eklesia || '—'}</td>
-      <td>${d._discipuladorNome || '—'}</td>
-      <td>${d.DataCadastro ? formatarDataBR(d.DataCadastro) : '—'}</td>
-    </tr>
-  `).join('');
+      <td>${d.Contato||'—'}</td>
+      <td>${d.DataAniversario?formatarDataBR(d.DataAniversario):'—'}</td>
+      <td>${d.Eklesia||'—'}</td>
+      <td>${d._discipuladorNome||'—'}</td>
+      <td>${d.DataCadastro?formatarDataBR(d.DataCadastro):'—'}</td>
+    </tr>`).join('');
 }
 
-function aplicarFiltros() {
-  const nome = document.getElementById('f-nome').value.toLowerCase();
-  const discId = document.getElementById('f-discipulador').value;
-  const eklesia = document.getElementById('f-eklesia').value;
-
-  const filtrado = estado.todosDiscipulos.filter(d => {
-    const matchNome = !nome || d.NomeCompleto.toLowerCase().includes(nome);
-    const matchDisc = !discId || d.DiscipuladorID === discId;
-    const matchEk   = !eklesia || d.Eklesia === eklesia;
-    return matchNome && matchDisc && matchEk;
-  });
-
-  document.getElementById('count-todos').textContent = filtrado.length + ' discípulos';
+function aplicarFiltros(){
+  const nome=document.getElementById('f-nome').value.toLowerCase();
+  const discId=document.getElementById('f-discipulador').value;
+  const eklesia=document.getElementById('f-eklesia').value;
+  const filtrado=estado.todosDiscipulos.filter(d=>
+    (!nome||d.NomeCompleto.toLowerCase().includes(nome))&&
+    (!discId||d.DiscipuladorID===discId)&&
+    (!eklesia||d.Eklesia===eklesia));
+  document.getElementById('count-todos').textContent=filtrado.length+' discípulos';
   renderizarTabela(filtrado);
 }
+function limparFiltros(){['f-nome','f-discipulador','f-eklesia'].forEach(id=>document.getElementById(id).value='');aplicarFiltros();}
 
-function limparFiltros() {
-  document.getElementById('f-nome').value = '';
-  document.getElementById('f-discipulador').value = '';
-  document.getElementById('f-eklesia').value = '';
-  aplicarFiltros();
-}
-
-// ════════════════════════════════════════════════
-//  DISCIPULADOR — DISCÍPULOS
-// ════════════════════════════════════════════════
-async function carregarDiscipulos() {
-  document.getElementById('disc-nome-welcome').textContent = estado.discipulador.nome.split(' ')[0];
-  document.getElementById('disc-nome-topbar').textContent = estado.discipulador.nome;
-
-  // Limpa imediatamente antes de buscar os dados do novo discipulador
-  document.getElementById('lista-disciplos').innerHTML = '<div class="empty"><div class="empty-icon" style="font-size:28px;">⏳</div><h4>Carregando discípulos...</h4></div>';
-  document.getElementById('count-disciplos').textContent = '';
-
-  const r = await api('listarDiscipulos', { discipuladorId: estado.discipulador.id });
-  const lista = r.dados || [];
-  document.getElementById('count-disciplos').textContent = lista.length + ' discípulos';
-
-  const el = document.getElementById('lista-disciplos');
-  if (!lista.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">🌱</div><h4>Nenhum discípulo cadastrado</h4><p>Clique em "+ Novo Discípulo" para começar.</p></div>`;
-    return;
-  }
-  el.innerHTML = lista.map(d => `
-    <div class="disciplo-card" onclick="abrirPerfil(${JSON.stringify(d).replace(/"/g,'&quot;')})">
-      <div class="disciplo-header">
-        <div class="disciplo-info">
-          <div class="avatar">${iniciais(d.NomeCompleto)}</div>
-          <div>
-            <div class="disc-name">${d.NomeCompleto}</div>
-            <div class="disc-sub">
-              ${d.Eklesia ? d.Eklesia + ' · ' : ''}${d.Contato || ''}${d.DataAniversario ? ' · 🎂 ' + formatarDataBR(d.DataAniversario) : ''}
-            </div>
-          </div>
-        </div>
-        <span style="font-size:20px; color:var(--text3)">›</span>
-      </div>
-    </div>
-  `).join('');
-}
-
-function abrirModalCadDiscipulo() {
-  document.getElementById('disciplo-nome').value = '';
-  document.getElementById('disciplo-contato').value = '';
-  document.getElementById('disciplo-aniversario').value = '';
-  document.getElementById('disciplo-eklesia').value = '';
-  abrirModal('modal-cad-disciplo');
-}
-
-async function salvarDiscipulo() {
-  const nome     = document.getElementById('disciplo-nome').value.trim();
-  const contato  = document.getElementById('disciplo-contato').value.trim();
-  const aniv     = document.getElementById('disciplo-aniversario').value;
-  const eklesia  = document.getElementById('disciplo-eklesia').value.trim();
-
-  if (!nome)    { toast('Nome completo é obrigatório.', true); return; }
-  if (!contato) { toast('Contato é obrigatório.', true); return; }
-  if (!aniv)    { toast('Data de aniversário é obrigatória.', true); return; }
-
-  const r = await api('cadastrarDiscipulo', {
-    discipuladorId: estado.discipulador.id,
-    nomeCompleto: nome, contato, dataAniversario: aniv, eklesia
-  });
-  if (!r.ok) { toast(r.msg || 'Erro ao cadastrar.', true); return; }
-  toast('Discípulo cadastrado!');
-  fecharModal('modal-cad-disciplo');
-  carregarDiscipulos();
-}
-
-// ════════════════════════════════════════════════
-//  PERFIL DO DISCÍPULO
-// ════════════════════════════════════════════════
-async function abrirPerfil(disciplo) {
-  estado.discipuloAtivo = disciplo;
-  document.getElementById('perfil-nome').textContent = disciplo.NomeCompleto;
-  document.getElementById('perfil-sub').textContent = [disciplo.Eklesia, disciplo.Contato].filter(Boolean).join(' · ');
-  document.getElementById('enc-data').value = hoje();
-  document.getElementById('trein-data').value = hoje();
-  switchTab('acomp', document.querySelector('.tab-btn'));
+// ── ADMIN: VER TRILHA DE DISCÍPULO (somente leitura) ──
+async function abrirPerfilAdmin(disciplo){
+  estado.discipuloAtivo=disciplo;
+  document.getElementById('perfil-nome').textContent=disciplo.NomeCompleto;
+  document.getElementById('perfil-sub').textContent=[disciplo.Eklesia,disciplo.Contato,disciplo._discipuladorNome?'Discipulador: '+disciplo._discipuladorNome:''].filter(Boolean).join(' · ');
+  // modo readonly
+  document.getElementById('acomp-save-wrap').style.display='none';
+  document.getElementById('enc-form-wrap').style.display='none';
+  document.getElementById('trein-form-wrap').style.display='none';
+  switchTab('acomp',document.querySelector('#modal-perfil .tab-btn'));
   abrirModal('modal-perfil');
-  await carregarAcompanhamento(disciplo.ID);
+  await carregarAcompanhamento(disciplo.ID,true);
   carregarEncontros(disciplo.ID);
   carregarTreinamentos(disciplo.ID);
 }
 
-// ── Acompanhamento ──
-async function carregarAcompanhamento(discipuloId) {
-  const r = await api('buscarAcompanhamento', { discipuloId });
-  estado.acompAtivo = r.dados || {};
-  renderizarAcomp();
+// ── DISCIPULADOR: DISCÍPULOS ──
+async function carregarDiscipulos(){
+  document.getElementById('disc-nome-welcome').textContent=estado.discipulador.nome.split(' ')[0];
+  document.getElementById('disc-nome-topbar').textContent=estado.discipulador.nome;
+  document.getElementById('lista-disciplos').innerHTML='<div class="empty"><div class="empty-icon" style="font-size:28px">⏳</div><h4>Carregando discípulos...</h4></div>';
+  document.getElementById('count-disciplos').textContent='';
+  const r=await api('listarDiscipulos',{discipuladorId:estado.discipulador.id});
+  const lista=r.dados||[];
+  document.getElementById('count-disciplos').textContent=lista.length+' discípulos';
+  const el=document.getElementById('lista-disciplos');
+  if(!lista.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌱</div><h4>Nenhum discípulo cadastrado</h4><p>Clique em "+ Novo Discípulo" para começar.</p></div>';return;}
+  el.innerHTML=lista.map(d=>`
+    <div class="disciplo-card" onclick="abrirPerfil(${JSON.stringify(d).replace(/"/g,'&quot;')})">
+      <div class="disciplo-header">
+        <div class="disciplo-info">
+          <div class="avatar">${iniciais(d.NomeCompleto)}</div>
+          <div><div class="disc-name">${d.NomeCompleto}</div>
+          <div class="disc-sub">${d.Eklesia?d.Eklesia+' · ':''}${d.Contato||''}${d.DataAniversario?' · 🎂 '+formatarDataBR(d.DataAniversario):''}</div></div>
+        </div>
+        <span style="font-size:20px;color:var(--text3)">›</span>
+      </div>
+    </div>`).join('');
 }
 
-function renderizarAcomp() {
-  const d = estado.acompAtivo;
-  document.getElementById('acomp-grid').innerHTML = ITENS_ACOMP.map(item => {
-    const inicio = d[item.key + '_Inicio'] || '';
-    const fim    = d[item.key + '_Fim']    || '';
-    let cls = 'status-nao', txt = 'Não iniciado';
-    if (inicio && fim)  { cls = 'status-ok'; txt = 'Concluído'; }
-    else if (inicio)    { cls = 'status-em'; txt = 'Em andamento'; }
-    return `
-      <div class="acomp-item" id="acomp-${item.key}">
-        <div class="acomp-item-header">
-          <span class="acomp-item-title">${item.label}</span>
-          <span class="status-badge ${cls}">${txt}</span>
-        </div>
-        <div class="date-row">
-          <div class="date-col">
-            <label>Início</label>
-            <input type="date" id="inp-${item.key}-inicio" value="${inicio}"
-              onchange="atualizarStatusAcomp('${item.key}')">
-          </div>
-          <div class="date-col">
-            <label>Término</label>
-            <input type="date" id="inp-${item.key}-fim" value="${fim}"
-              onchange="atualizarStatusAcomp('${item.key}')"
-              ${!inicio ? 'disabled title="Informe a data de início primeiro"' : ''}>
-          </div>
-        </div>
-      </div>`;
+function abrirModalCadDiscipulo(){['disciplo-nome','disciplo-contato','disciplo-eklesia'].forEach(id=>document.getElementById(id).value='');document.getElementById('disciplo-aniversario').value='';abrirModal('modal-cad-disciplo');}
+async function salvarDiscipulo(){
+  const nome=document.getElementById('disciplo-nome').value.trim();
+  const contato=document.getElementById('disciplo-contato').value.trim();
+  const aniv=document.getElementById('disciplo-aniversario').value;
+  const eklesia=document.getElementById('disciplo-eklesia').value.trim();
+  if(!nome){toast('Nome completo é obrigatório.',true);return;}
+  if(!contato){toast('Contato é obrigatório.',true);return;}
+  if(!aniv){toast('Data de aniversário é obrigatória.',true);return;}
+  const r=await api('cadastrarDiscipulo',{discipuladorId:estado.discipulador.id,nomeCompleto:nome,contato,dataAniversario:aniv,eklesia});
+  if(!r.ok){toast(r.msg||'Erro ao cadastrar.',true);return;}
+  toast('Discípulo cadastrado!');fecharModal('modal-cad-disciplo');carregarDiscipulos();
+}
+
+// ── PERFIL (discipulador) ──
+async function abrirPerfil(disciplo){
+  estado.discipuloAtivo=disciplo;
+  document.getElementById('perfil-nome').textContent=disciplo.NomeCompleto;
+  document.getElementById('perfil-sub').textContent=[disciplo.Eklesia,disciplo.Contato].filter(Boolean).join(' · ');
+  document.getElementById('enc-data').value=hoje();
+  document.getElementById('trein-data').value=hoje();
+  // modo edição
+  document.getElementById('acomp-save-wrap').style.display='block';
+  document.getElementById('enc-form-wrap').style.display='block';
+  document.getElementById('trein-form-wrap').style.display='block';
+  switchTab('acomp',document.querySelector('#modal-perfil .tab-btn'));
+  abrirModal('modal-perfil');
+  await carregarAcompanhamento(disciplo.ID,false);
+  carregarEncontros(disciplo.ID);
+  carregarTreinamentos(disciplo.ID);
+}
+
+// ── ACOMPANHAMENTO ──
+async function carregarAcompanhamento(discipuloId,readonly=false){
+  const r=await api('buscarAcompanhamento',{discipuloId});
+  estado.acompAtivo=r.dados||{};
+  renderizarAcomp(readonly);
+}
+
+function renderizarAcomp(readonly=false){
+  const d=estado.acompAtivo;
+  const grid=document.getElementById('acomp-grid');
+  grid.className='acomp-grid'+(readonly?' acomp-readonly':'');
+  grid.innerHTML=ITENS_ACOMP.map(item=>{
+    const inicio=d[item.key+'_Inicio']||'';
+    const fim=d[item.key+'_Fim']||'';
+    let cls='status-nao',txt='Não iniciado';
+    if(inicio&&fim){cls='status-ok';txt='Concluído';}
+    else if(inicio){cls='status-em';txt='Em andamento';}
+    return`<div class="acomp-item" id="acomp-${item.key}">
+      <div class="acomp-item-header"><span class="acomp-item-title">${item.label}</span><span class="status-badge ${cls}">${txt}</span></div>
+      <div class="date-row">
+        <div class="date-col"><label>Início</label><input type="date" id="inp-${item.key}-inicio" value="${inicio}" ${readonly?'readonly':'onchange="atualizarStatusAcomp(\''+item.key+'\')"'}></div>
+        <div class="date-col"><label>Término</label><input type="date" id="inp-${item.key}-fim" value="${fim}" ${readonly?'readonly':(!inicio?'disabled title="Informe a data de início primeiro"':'onchange="atualizarStatusAcomp(\''+item.key+'\')"')}></div>
+      </div>
+    </div>`;
   }).join('');
 }
 
-function atualizarStatusAcomp(key) {
-  const inicio = document.getElementById('inp-' + key + '-inicio').value;
-  const fimInp = document.getElementById('inp-' + key + '-fim');
-  if (!inicio) { fimInp.disabled = true; fimInp.value = ''; toast('Informe a data de início primeiro.', true); }
-  else { fimInp.disabled = false; }
-  const fim = fimInp.value;
-  if (inicio && fim && fim < inicio) { fimInp.value = ''; toast('Término não pode ser antes do início.', true); return; }
-  let cls = 'status-nao', txt = 'Não iniciado';
-  if (inicio && fim)  { cls = 'status-ok'; txt = 'Concluído'; }
-  else if (inicio)    { cls = 'status-em'; txt = 'Em andamento'; }
-  const badge = document.querySelector('#acomp-' + key + ' .status-badge');
-  if (badge) { badge.className = 'status-badge ' + cls; badge.textContent = txt; }
+function atualizarStatusAcomp(key){
+  const inicio=document.getElementById('inp-'+key+'-inicio').value;
+  const fimInp=document.getElementById('inp-'+key+'-fim');
+  if(!inicio){fimInp.disabled=true;fimInp.value='';toast('Informe a data de início primeiro.',true);}
+  else{fimInp.disabled=false;}
+  const fim=fimInp.value;
+  if(inicio&&fim&&fim<inicio){fimInp.value='';toast('Término não pode ser antes do início.',true);return;}
+  let cls='status-nao',txt='Não iniciado';
+  if(inicio&&fim){cls='status-ok';txt='Concluído';}else if(inicio){cls='status-em';txt='Em andamento';}
+  const badge=document.querySelector('#acomp-'+key+' .status-badge');
+  if(badge){badge.className='status-badge '+cls;badge.textContent=txt;}
 }
 
-async function salvarAcompanhamento() {
-  const campos = {};
-  ITENS_ACOMP.forEach(item => {
-    campos[item.key + '_Inicio'] = document.getElementById('inp-' + item.key + '-inicio').value;
-    campos[item.key + '_Fim']    = document.getElementById('inp-' + item.key + '-fim').value;
-  });
-  const r = await api('salvarAcompanhamento', { discipuloId: estado.discipuloAtivo.ID, campos });
-  if (!r.ok) { toast(r.msg || 'Erro ao salvar.', true); return; }
-  toast('Trilha salva!');
+async function salvarAcompanhamento(){
+  const campos={};
+  ITENS_ACOMP.forEach(item=>{campos[item.key+'_Inicio']=document.getElementById('inp-'+item.key+'-inicio').value;campos[item.key+'_Fim']=document.getElementById('inp-'+item.key+'-fim').value;});
+  const r=await api('salvarAcompanhamento',{discipuloId:estado.discipuloAtivo.ID,campos});
+  if(!r.ok){toast(r.msg||'Erro ao salvar.',true);return;}toast('Trilha salva!');
 }
 
-// ── Encontros ──
-async function carregarEncontros(discipuloId) {
-  const r = await api('listarEncontros', { discipuloId });
-  const lista = r.dados || [];
-  const el = document.getElementById('lista-encontros');
-  el.innerHTML = lista.length
-    ? lista.map(e => `<div class="encontro-item"><div class="encontro-date">${formatarDataBR(e.Data)}</div><div class="encontro-desc">${e.Descricao}</div></div>`).join('')
-    : `<div class="empty"><div class="empty-icon">📖</div><h4>Nenhum encontro registrado ainda</h4></div>`;
+// ── ENCONTROS ──
+async function carregarEncontros(discipuloId){
+  const r=await api('listarEncontros',{discipuloId});const lista=r.dados||[];
+  document.getElementById('lista-encontros').innerHTML=lista.length
+    ?lista.map(e=>`<div class="encontro-item"><div class="encontro-date">${formatarDataBR(e.Data)}</div><div class="encontro-desc">${e.Descricao}</div></div>`).join('')
+    :'<div class="empty"><div class="empty-icon">📖</div><h4>Nenhum encontro registrado ainda</h4></div>';
+}
+async function salvarEncontro(){
+  const data=document.getElementById('enc-data').value;const desc=document.getElementById('enc-desc').value.trim();
+  if(!data){toast('Informe a data.',true);return;}if(!desc){toast('Descreva o encontro.',true);return;}
+  const r=await api('salvarEncontro',{discipuloId:estado.discipuloAtivo.ID,data,descricao:desc});
+  if(!r.ok){toast(r.msg||'Erro.',true);return;}
+  toast('Encontro registrado!');document.getElementById('enc-desc').value='';carregarEncontros(estado.discipuloAtivo.ID);
 }
 
-async function salvarEncontro() {
-  const data = document.getElementById('enc-data').value;
-  const desc = document.getElementById('enc-desc').value.trim();
-  if (!data) { toast('Informe a data do encontro.', true); return; }
-  if (!desc) { toast('Descreva o encontro.', true); return; }
-  const r = await api('salvarEncontro', { discipuloId: estado.discipuloAtivo.ID, data, descricao: desc });
-  if (!r.ok) { toast(r.msg || 'Erro.', true); return; }
-  toast('Encontro registrado!');
-  document.getElementById('enc-desc').value = '';
-  carregarEncontros(estado.discipuloAtivo.ID);
+// ── TREINAMENTOS ──
+async function carregarTreinamentos(discipuloId){
+  const r=await api('listarTreinamentos',{discipuloId});const lista=r.dados||[];
+  document.getElementById('lista-treinamentos').innerHTML=lista.length
+    ?lista.map(t=>`<div class="trein-item"><div class="trein-header"><span class="trein-tipo">${t.Tipo}</span><span class="trein-date">${formatarDataBR(t.Data)}</span></div><div class="trein-desc">${t.Descricao}</div></div>`).join('')
+    :'<div class="empty"><div class="empty-icon">📚</div><h4>Nenhum treinamento registrado ainda</h4></div>';
+}
+async function salvarTreinamento(){
+  const tipo=document.getElementById('trein-tipo').value;const data=document.getElementById('trein-data').value;const desc=document.getElementById('trein-desc').value.trim();
+  if(!data){toast('Informe a data.',true);return;}if(!desc){toast('Descreva o treinamento.',true);return;}
+  const r=await api('salvarTreinamento',{discipuloId:estado.discipuloAtivo.ID,tipo,data,descricao:desc});
+  if(!r.ok){toast(r.msg||'Erro.',true);return;}
+  toast('Registrado!');document.getElementById('trein-desc').value='';carregarTreinamentos(estado.discipuloAtivo.ID);
 }
 
-// ── Treinamentos ──
-async function carregarTreinamentos(discipuloId) {
-  const r = await api('listarTreinamentos', { discipuloId });
-  const lista = r.dados || [];
-  const el = document.getElementById('lista-treinamentos');
-  el.innerHTML = lista.length
-    ? lista.map(t => `<div class="trein-item"><div class="trein-header"><span class="trein-tipo">${t.Tipo}</span><span class="trein-date">${formatarDataBR(t.Data)}</span></div><div class="trein-desc">${t.Descricao}</div></div>`).join('')
-    : `<div class="empty"><div class="empty-icon">📚</div><h4>Nenhum treinamento registrado ainda</h4></div>`;
-}
-
-async function salvarTreinamento() {
-  const tipo = document.getElementById('trein-tipo').value;
-  const data = document.getElementById('trein-data').value;
-  const desc = document.getElementById('trein-desc').value.trim();
-  if (!data) { toast('Informe a data.', true); return; }
-  if (!desc) { toast('Descreva o treinamento ou livro.', true); return; }
-  const r = await api('salvarTreinamento', { discipuloId: estado.discipuloAtivo.ID, tipo, data, descricao: desc });
-  if (!r.ok) { toast(r.msg || 'Erro.', true); return; }
-  toast('Registrado!');
-  document.getElementById('trein-desc').value = '';
-  carregarTreinamentos(estado.discipuloAtivo.ID);
-}
-
-// ════════════════════════════════════════════════
-//  TABS
-// ════════════════════════════════════════════════
-function switchTab(tab, btn) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  if (btn) btn.classList.add('active');
-  else {
-    const b = document.querySelector(`.tab-btn[onclick*="'${tab}'"]`);
-    if (b) b.classList.add('active');
+// ── DASHBOARD ──
+async function carregarDashboard(){
+  // Garante que os dados estão carregados
+  if(!estado.todosDiscipuladores.length){
+    const rD=await api('listarDiscipuladores',{adminSenha:estado.adminSenha});
+    estado.todosDiscipuladores=rD.dados||[];
   }
+  if(!estado.todosDiscipulos.length){
+    let todos=[];
+    for(const disc of estado.todosDiscipuladores){
+      const r=await api('listarDiscipulos',{discipuladorId:disc.ID});
+      todos=todos.concat((r.dados||[]).map(d=>({...d,_discipuladorId:disc.ID,_discipuladorNome:disc.Nome})));
+    }
+    estado.todosDiscipulos=todos;
+  }
+
+  // Popula filtro de discipulador do dashboard
+  const sel=document.getElementById('dash-f-disc');
+  if(sel.options.length<=1){
+    estado.todosDiscipuladores.forEach(d=>{
+      const o=document.createElement('option');o.value=d.ID;o.textContent=d.Nome;sel.appendChild(o);
+    });
+  }
+
+  // Busca acompanhamentos de todos os discípulos ainda não carregados
+  for(const disc of estado.todosDiscipulos){
+    if(!estado.acompanhamentos[disc.ID]){
+      const r=await api('buscarAcompanhamento',{discipuloId:disc.ID});
+      estado.acompanhamentos[disc.ID]=r.dados||{};
+    }
+  }
+  renderizarDashboard();
 }
 
-// ════════════════════════════════════════════════
-//  MODAIS
-// ════════════════════════════════════════════════
-function abrirModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
-function fecharModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
-document.querySelectorAll('.modal-overlay').forEach(o => {
-  o.addEventListener('click', e => { if (e.target === o) fecharModal(o.id); });
-});
+function renderizarDashboard(){
+  const discId=document.getElementById('dash-f-disc').value;
+  const disciplos=discId?estado.todosDiscipulos.filter(d=>d._discipuladorId===discId||d.DiscipuladorID===discId):estado.todosDiscipulos;
+  const total=disciplos.length;
 
-// ════════════════════════════════════════════════
-//  UTILITÁRIOS
-// ════════════════════════════════════════════════
-function iniciais(nome) {
-  if (!nome) return '?';
-  return nome.split(' ').filter(Boolean).slice(0,2).map(n => n[0].toUpperCase()).join('');
-}
-function formatarDataBR(data) {
-  if (!data) return '—';
-  const p = String(data).split('-');
-  return p.length === 3 ? p[2]+'/'+p[1]+'/'+p[0] : data;
-}
-function hoje() { return new Date().toISOString().split('T')[0]; }
+  // KPIs
+  const concluidos=disciplos.filter(d=>{
+    const a=estado.acompanhamentos[d.ID]||{};
+    return ITENS_ACOMP.every(item=>a[item.key+'_Fim']);
+  }).length;
+  const emAndamento=disciplos.filter(d=>{
+    const a=estado.acompanhamentos[d.ID]||{};
+    return ITENS_ACOMP.some(item=>a[item.key+'_Inicio'])&&!ITENS_ACOMP.every(item=>a[item.key+'_Fim']);
+  }).length;
+  const naoIniciado=total-concluidos-emAndamento;
 
-let toastTimer;
-function toast(msg, erro = false) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'show' + (erro ? ' error' : '');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.className = '', 3200);
+  document.getElementById('kpi-grid').innerHTML=`
+    <div class="kpi-card"><div class="kpi-num">${total}</div><div class="kpi-label">Total de Discípulos</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--success)">${concluidos}</div><div class="kpi-label">Trilha Concluída</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--warning)">${emAndamento}</div><div class="kpi-label">Em Andamento</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--text3)">${naoIniciado}</div><div class="kpi-label">Não Iniciado</div></div>
+  `;
+
+  // Dados por etapa
+  const etapaLabels=ITENS_ACOMP.map(i=>i.label);
+  const etapaConcluidos=ITENS_ACOMP.map(item=>disciplos.filter(d=>(estado.acompanhamentos[d.ID]||{})[item.key+'_Fim']).length);
+  const etapaAndamento=ITENS_ACOMP.map(item=>disciplos.filter(d=>{const a=estado.acompanhamentos[d.ID]||{};return a[item.key+'_Inicio']&&!a[item.key+'_Fim'];}).length);
+
+  // Gráfico de barras: conclusões por etapa
+  if(estado.chartEtapas){estado.chartEtapas.destroy();}
+  estado.chartEtapas=new Chart(document.getElementById('chart-etapas'),{
+    type:'bar',
+    data:{
+      labels:etapaLabels,
+      datasets:[
+        {label:'Concluído',data:etapaConcluidos,backgroundColor:'rgba(29,158,117,.75)',borderRadius:4},
+        {label:'Em andamento',data:etapaAndamento,backgroundColor:'rgba(186,117,23,.5)',borderRadius:4}
+      ]
+    },
+    options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{x:{ticks:{font:{size:10},maxRotation:45}},y:{beginAtZero:true,ticks:{stepSize:1}}}}
+  });
+
+  // Gráfico de rosca: status geral
+  if(estado.chartStatus){estado.chartStatus.destroy();}
+  estado.chartStatus=new Chart(document.getElementById('chart-status'),{
+    type:'doughnut',
+    data:{
+      labels:['Concluída','Em andamento','Não iniciado'],
+      datasets:[{data:[concluidos,emAndamento,naoIniciado],backgroundColor:['rgba(29,158,117,.8)','rgba(186,117,23,.7)','rgba(200,200,200,.6)'],borderWidth:2}]
+    },
+    options:{responsive:true,plugins:{legend:{position:'bottom'}},cutout:'65%'}
+  });
 }
+
+// ── EXPORTAÇÃO EXCEL ──
+function exportarDiscipuladores(){
+  const dados=estado.todosDiscipuladores.map(d=>({Nome:d.Nome,Email:d.Email||'','Código de Acesso':d.CodigoChave,Cadastro:formatarDataBR(d.DataCadastro)}));
+  exportarXLSX(dados,'Discipuladores','discipuladores.xlsx');
+}
+
+function exportarDiscipulos(){
+  const dados=estado.todosDiscipulos.map(d=>({'Nome Completo':d.NomeCompleto,Contato:d.Contato||'',Aniversário:d.DataAniversario?formatarDataBR(d.DataAniversario):'',Eklesia:d.Eklesia||'',Discipulador:d._discipuladorNome||'',Cadastro:formatarDataBR(d.DataCadastro)}));
+  exportarXLSX(dados,'Discípulos','discipulos.xlsx');
+}
+
+function exportarXLSX(dados,nomeAba,nomeArquivo){
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.json_to_sheet(dados);
+  // Ajusta largura das colunas
+  const cols=Object.keys(dados[0]||{}).map(k=>({wch:Math.max(k.length,16)}));
+  ws['!cols']=cols;
+  XLSX.utils.book_append_sheet(wb,ws,nomeAba);
+  XLSX.writeFile(wb,nomeArquivo);
+  toast('Exportação concluída!');
+}
+
+// ── TABS ──
+function switchTab(tab,btn){
+  document.querySelectorAll('#modal-perfil .tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#modal-perfil .tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(btn)btn.classList.add('active');
+  else{const b=document.querySelector(`#modal-perfil .tab-btn[onclick*="'${tab}'"]`);if(b)b.classList.add('active');}
+}
+
+// ── MODAIS ──
+function abrirModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function fecharModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)fecharModal(o.id);}));
 </script>
 </body>
 </html>
