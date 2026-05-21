@@ -307,6 +307,9 @@ table.dtable tr:hover td { background: var(--surface2); cursor: pointer; }
 .text-muted { color: var(--text2); }
 .mt-1 { margin-top: 8px; }
 input[type="date"] { cursor: pointer; }
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button { display: none !important; }
 </style>
 </head>
 <body>
@@ -469,9 +472,12 @@ input[type="date"] { cursor: pointer; }
       </div>
       <div class="form-group">
         <label>Código de Acesso <span class="req">*</span></label>
-        <input type="text" id="cad-disc-codigo" placeholder="Ex: JOAO2024" style="text-transform:uppercase;"
-          oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')">
-        <p class="text-sm text-muted mt-1">Este código será usado para o discipulador fazer login.</p>
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="cad-disc-codigo" placeholder="Gerado automaticamente" style="text-transform:uppercase; font-family:monospace; letter-spacing:.1em;"
+            oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')">
+          <button type="button" class="btn btn-ghost btn-sm" style="white-space:nowrap; flex-shrink:0;" onclick="gerarCodigoAcesso()">🔄 Novo</button>
+        </div>
+        <p class="text-sm text-muted mt-1">Gerado automaticamente. Você pode editar se quiser.</p>
       </div>
     </div>
     <div class="modal-footer">
@@ -749,10 +755,17 @@ async function carregarDiscipuladores() {
   `).join('');
 }
 
+function gerarCodigoAcesso() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let cod = '';
+  for (let i = 0; i < 8; i++) cod += chars[Math.floor(Math.random() * chars.length)];
+  document.getElementById('cad-disc-codigo').value = cod;
+}
+
 function abrirModalCadDisc() {
   document.getElementById('cad-disc-nome').value = '';
   document.getElementById('cad-disc-email').value = '';
-  document.getElementById('cad-disc-codigo').value = '';
+  gerarCodigoAcesso();
   abrirModal('modal-cad-disc');
 }
 
