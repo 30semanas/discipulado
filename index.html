@@ -30,417 +30,241 @@
   --shadow: 0 2px 12px rgba(0,0,0,0.07);
   --shadow-md: 0 4px 24px rgba(0,0,0,0.10);
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 15px;
-}
-
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; }
 h1, h2, h3 { font-family: 'Playfair Display', serif; }
 
-.page { display: none; }
+/* ── PAGES ── */
+.page { display: none; min-height: 100vh; }
 .page.active { display: block; }
 
 /* ── LOGIN ── */
 #page-login {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: none; align-items: center; justify-content: center;
   background: linear-gradient(145deg, #2D5016 0%, #1a3009 100%);
 }
+#page-login.active { display: flex; }
 
 .login-box {
-  background: var(--surface);
-  border-radius: 20px;
-  padding: 48px 40px;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: var(--shadow-md);
-  text-align: center;
+  background: var(--surface); border-radius: 20px; padding: 48px 40px;
+  width: 100%; max-width: 400px; box-shadow: var(--shadow-md); text-align: center;
 }
-
 .login-logo {
-  width: 64px;
-  height: 64px;
-  background: var(--primary-pale);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 24px;
-  font-size: 28px;
+  width: 64px; height: 64px; background: var(--primary-pale); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px; font-size: 28px;
 }
-
-.login-box h1 {
-  font-size: 26px;
-  color: var(--primary);
-  margin-bottom: 6px;
-}
-
-.login-box p {
-  color: var(--text2);
-  font-size: 14px;
-  margin-bottom: 32px;
-}
+.login-box h1 { font-size: 26px; color: var(--primary); margin-bottom: 6px; }
+.login-box > p { color: var(--text2); font-size: 14px; margin-bottom: 32px; }
 
 .login-tabs {
-  display: flex;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  margin-bottom: 28px;
+  display: flex; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 28px;
 }
-
 .login-tab {
-  flex: 1;
-  padding: 10px;
-  font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text2);
-  font-weight: 500;
-  transition: all .2s;
+  flex: 1; padding: 10px; font-size: 13px; font-family: 'DM Sans', sans-serif;
+  background: none; border: none; cursor: pointer; color: var(--text2);
+  font-weight: 500; transition: all .2s;
 }
-
-.login-tab.active {
-  background: var(--primary);
-  color: #fff;
-}
+.login-tab.active { background: var(--primary); color: #fff; }
 
 .form-group { margin-bottom: 18px; text-align: left; }
-
 label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  color: var(--text2);
-  margin-bottom: 6px;
+  display: block; font-size: 12px; font-weight: 600; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text2); margin-bottom: 6px;
 }
+.req { color: var(--danger); margin-left: 2px; }
 
 input, select, textarea {
-  width: 100%;
-  padding: 11px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  background: var(--surface);
-  color: var(--text);
-  transition: border-color .2s;
-  outline: none;
+  width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
+  font-size: 15px; background: var(--surface); color: var(--text);
+  transition: border-color .2s; outline: none;
 }
-
-input:focus, select:focus, textarea:focus {
-  border-color: var(--primary);
-}
-
+input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+input.invalid { border-color: var(--danger); }
 textarea { resize: vertical; min-height: 90px; }
 
+/* password-wrapper para campo com olho */
+.pw-wrap { position: relative; }
+.pw-wrap input { padding-right: 42px; }
+.pw-toggle {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; color: var(--text3);
+  font-size: 18px; line-height: 1; padding: 4px;
+}
+.pw-toggle:hover { color: var(--text2); }
+
 .btn {
-  padding: 12px 24px;
-  border-radius: var(--radius-sm);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all .15s;
+  padding: 12px 24px; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all .15s;
 }
-
-.btn-primary {
-  background: var(--primary);
-  color: #fff;
-  width: 100%;
-}
-
+.btn-primary { background: var(--primary); color: #fff; width: 100%; }
 .btn-primary:hover { background: var(--primary-light); }
-
-.btn-ghost {
-  background: none;
-  border: 1.5px solid var(--border);
-  color: var(--text2);
-}
-
+.btn-ghost { background: none; border: 1.5px solid var(--border); color: var(--text2); }
 .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
-
 .btn-sm { padding: 8px 16px; font-size: 13px; }
 .btn-danger { background: var(--danger); color: #fff; }
 
-.error-msg {
-  color: var(--danger);
-  font-size: 13px;
-  margin-top: 10px;
-  text-align: center;
-}
+.error-msg { color: var(--danger); font-size: 13px; margin-top: 10px; text-align: center; }
 
-/* ── ADMIN ── */
-#page-admin { padding: 0; }
-
+/* ── TOPBAR ── */
 .topbar {
-  background: var(--primary);
-  color: #fff;
-  padding: 0 32px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.topbar-title { font-family: 'Playfair Display', serif; font-size: 18px; }
-.topbar-right { display: flex; align-items: center; gap: 12px; }
-
-.btn-topbar {
-  background: rgba(255,255,255,.15);
-  border: none;
-  color: #fff;
-  padding: 7px 16px;
-  border-radius: 6px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background .15s;
-}
-
-.btn-topbar:hover { background: rgba(255,255,255,.25); }
-
-.admin-content { padding: 32px; max-width: 900px; margin: 0 auto; }
-
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-}
-
-.section-header h2 { font-size: 22px; color: var(--primary); }
-
-/* ── CARDS ── */
-.card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 24px;
-  box-shadow: var(--shadow);
-  margin-bottom: 16px;
-}
-
-.disc-list { list-style: none; }
-
-.disc-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  margin-bottom: 10px;
-  transition: box-shadow .15s;
-}
-
-.disc-item:hover { box-shadow: var(--shadow); }
-
-.disc-info { display: flex; align-items: center; gap: 14px; }
-
-.avatar {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  background: var(--primary-pale);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 14px; color: var(--primary);
-  flex-shrink: 0;
-}
-
-.disc-name { font-weight: 600; font-size: 15px; }
-.disc-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .03em;
-}
-
-.badge-code {
-  background: var(--primary-pale);
-  color: var(--primary);
-  font-family: monospace;
-  font-size: 13px;
-  letter-spacing: .1em;
-  padding: 4px 12px;
-}
-
-/* ── DISCIPULADO (área do discipulador) ── */
-#page-disc { padding: 0; }
-
-.disc-topbar {
-  background: var(--primary);
-  color: #fff;
-  padding: 0 24px;
-  height: 60px;
+  background: var(--primary); color: #fff; padding: 0 32px; height: 60px;
   display: flex; align-items: center; justify-content: space-between;
   position: sticky; top: 0; z-index: 100;
 }
+.topbar-title { font-family: 'Playfair Display', serif; font-size: 18px; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-tabs { display: flex; gap: 4px; }
+.topbar-tab {
+  background: rgba(255,255,255,.1); border: none; color: rgba(255,255,255,.75);
+  padding: 7px 16px; border-radius: 6px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; cursor: pointer; transition: all .15s;
+}
+.topbar-tab.active, .topbar-tab:hover { background: rgba(255,255,255,.22); color: #fff; }
+.btn-topbar {
+  background: rgba(255,255,255,.15); border: none; color: #fff;
+  padding: 7px 16px; border-radius: 6px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; cursor: pointer; transition: background .15s;
+}
+.btn-topbar:hover { background: rgba(255,255,255,.25); }
 
+/* ── ADMIN ── */
+#page-admin { padding: 0; }
+.admin-content { padding: 28px 32px; max-width: 1100px; margin: 0 auto; }
+.admin-tab-panel { display: none; }
+.admin-tab-panel.active { display: block; }
+
+.section-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;
+}
+.section-header h2 { font-size: 22px; color: var(--primary); }
+
+/* ── FILTROS ── */
+.filtros {
+  display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px;
+}
+.filtros input, .filtros select { flex: 1; min-width: 160px; margin: 0; }
+.filtros .btn { flex: 0 0 auto; width: auto; }
+
+/* ── TABELA DISCÍPULOS ── */
+.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+table.dtable { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--surface); }
+table.dtable th {
+  background: var(--surface2); font-size: 11px; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text2); padding: 10px 14px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+table.dtable td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+table.dtable tr:last-child td { border-bottom: none; }
+table.dtable tr:hover td { background: var(--surface2); cursor: pointer; }
+
+/* ── CARDS DISCIPULADORES ── */
+.disc-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-radius: var(--radius-sm); background: var(--surface);
+  border: 1px solid var(--border); margin-bottom: 10px; transition: box-shadow .15s;
+}
+.disc-item:hover { box-shadow: var(--shadow); }
+.disc-info { display: flex; align-items: center; gap: 14px; }
+
+.avatar {
+  width: 42px; height: 42px; border-radius: 50%; background: var(--primary-pale);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; color: var(--primary); flex-shrink: 0;
+}
+.disc-name { font-weight: 600; font-size: 15px; }
+.disc-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+.badge-code { background: var(--primary-pale); color: var(--primary); font-family: monospace; font-size: 13px; letter-spacing: .1em; padding: 4px 12px; }
+
+/* ── DISC AREA ── */
+#page-disc { padding: 0; }
+.disc-topbar {
+  background: var(--primary); color: #fff; padding: 0 24px; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
 .disc-area { padding: 24px; max-width: 1000px; margin: 0 auto; }
 
 .welcome-card {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-  color: #fff;
-  border-radius: var(--radius);
-  padding: 28px;
-  margin-bottom: 28px;
+  color: #fff; border-radius: var(--radius); padding: 28px; margin-bottom: 28px;
   display: flex; align-items: center; justify-content: space-between;
 }
-
 .welcome-text h2 { font-size: 20px; margin-bottom: 4px; }
 .welcome-text p { font-size: 14px; opacity: .8; }
 
-/* ── DISCIPULO CARD ── */
 .disciplo-card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  overflow: hidden;
-  margin-bottom: 14px;
-  cursor: pointer;
-  transition: box-shadow .15s, transform .1s;
+  background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border);
+  overflow: hidden; margin-bottom: 14px; cursor: pointer; transition: box-shadow .15s, transform .1s;
 }
-
 .disciplo-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
-
-.disciplo-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 20px;
-}
-
+.disciplo-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; }
 .disciplo-info { display: flex; align-items: center; gap: 14px; }
 
 /* ── MODAL ── */
 .modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.45);
-  z-index: 200;
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
+  position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
   opacity: 0; pointer-events: none; transition: opacity .2s;
 }
-
 .modal-overlay.open { opacity: 1; pointer-events: auto; }
-
 .modal {
-  background: var(--surface);
-  border-radius: 16px;
-  width: 100%; max-width: 640px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 8px 48px rgba(0,0,0,.18);
+  background: var(--surface); border-radius: 16px; width: 100%; max-width: 640px;
+  max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 48px rgba(0,0,0,.18);
   transform: translateY(16px); transition: transform .2s;
 }
-
 .modal-overlay.open .modal { transform: translateY(0); }
-
 .modal-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 22px 26px 0;
-  position: sticky; top: 0; background: var(--surface); z-index: 10;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
+  padding: 22px 26px 16px; position: sticky; top: 0; background: var(--surface);
+  z-index: 10; border-bottom: 1px solid var(--border);
 }
-
 .modal-header h3 { font-size: 19px; color: var(--primary); }
-
 .btn-close {
-  background: none; border: none; cursor: pointer;
-  font-size: 22px; color: var(--text3); line-height: 1;
-  padding: 4px 8px; border-radius: 6px;
-  transition: background .15s;
+  background: none; border: none; cursor: pointer; font-size: 22px;
+  color: var(--text3); line-height: 1; padding: 4px 8px; border-radius: 6px; transition: background .15s;
 }
-
 .btn-close:hover { background: var(--surface2); color: var(--text); }
-
 .modal-body { padding: 24px 26px; }
 .modal-footer {
-  padding: 16px 26px;
-  border-top: 1px solid var(--border);
+  padding: 16px 26px; border-top: 1px solid var(--border);
   display: flex; justify-content: flex-end; gap: 10px;
   position: sticky; bottom: 0; background: var(--surface);
 }
 
 /* ── ACOMPANHAMENTO ── */
-.acomp-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
+.acomp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
 @media (max-width: 600px) { .acomp-grid { grid-template-columns: 1fr; } }
-
-.acomp-item {
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 14px;
-  transition: border-color .15s;
-}
-
-.acomp-item-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 12px;
-}
-
+.acomp-item { border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 14px; }
+.acomp-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .acomp-item-title { font-weight: 600; font-size: 13px; }
-
-.status-badge {
-  padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700;
-}
-
+.status-badge { padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; }
 .status-nao { background: #E8E8E8; color: #666; }
 .status-em  { background: var(--warning-pale); color: var(--warning); }
 .status-ok  { background: var(--success-pale); color: var(--success); }
-
 .date-row { display: flex; gap: 10px; margin-top: 8px; }
 .date-col { flex: 1; }
 .date-col label { font-size: 11px; margin-bottom: 4px; }
 .date-col input { padding: 7px 10px; font-size: 13px; }
 
-/* ── ENCONTROS ── */
+/* ── ENCONTROS / TREINAMENTOS ── */
 .encontro-item {
-  border-left: 3px solid var(--primary);
-  padding: 12px 16px;
-  background: var(--surface2);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  margin-bottom: 10px;
+  border-left: 3px solid var(--primary); padding: 12px 16px;
+  background: var(--surface2); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 10px;
 }
-
 .encontro-date { font-size: 11px; color: var(--text3); margin-bottom: 4px; font-weight: 600; }
 .encontro-desc { font-size: 14px; color: var(--text); line-height: 1.6; }
 
-/* ── TREINAMENTOS ── */
 .trein-item {
-  border-left: 3px solid var(--gold);
-  padding: 12px 16px;
-  background: var(--gold-pale);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  margin-bottom: 10px;
+  border-left: 3px solid var(--gold); padding: 12px 16px;
+  background: var(--gold-pale); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 10px;
 }
-
 .trein-header { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
 .trein-tipo { font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: .05em; }
 .trein-date { font-size: 11px; color: var(--text3); }
@@ -457,50 +281,31 @@ textarea { resize: vertical; min-height: 90px; }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
-/* ── SPINNER ── */
+/* ── MISC ── */
 .spinner {
-  display: inline-block;
-  width: 16px; height: 16px;
-  border: 2px solid rgba(255,255,255,.4);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin .6s linear infinite;
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
+  border-radius: 50%; animation: spin .6s linear infinite;
 }
-
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── EMPTY STATE ── */
-.empty {
-  text-align: center; padding: 40px 20px; color: var(--text3);
-}
+.empty { text-align: center; padding: 40px 20px; color: var(--text3); }
 .empty-icon { font-size: 40px; margin-bottom: 12px; }
 .empty h4 { color: var(--text2); font-size: 16px; margin-bottom: 6px; }
 .empty p { font-size: 14px; }
 
-/* ── TOAST ── */
 #toast {
-  position: fixed; bottom: 24px; right: 24px;
-  background: var(--primary); color: #fff;
-  padding: 12px 20px; border-radius: var(--radius-sm);
-  font-size: 14px; font-weight: 500;
-  z-index: 999; opacity: 0; pointer-events: none;
-  transform: translateY(8px);
-  transition: all .25s;
-  max-width: 320px;
+  position: fixed; bottom: 24px; right: 24px; background: var(--primary); color: #fff;
+  padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
+  z-index: 999; opacity: 0; pointer-events: none; transform: translateY(8px);
+  transition: all .25s; max-width: 320px;
 }
-
 #toast.show { opacity: 1; transform: translateY(0); }
 #toast.error { background: var(--danger); }
 
-/* ── UTILS ── */
-.flex { display: flex; }
-.gap-2 { gap: 8px; }
-.mt-1 { margin-top: 8px; }
-.mt-2 { margin-top: 16px; }
-.w-full { width: 100%; }
 .text-sm { font-size: 13px; }
 .text-muted { color: var(--text2); }
-
+.mt-1 { margin-top: 8px; }
 input[type="date"] { cursor: pointer; }
 </style>
 </head>
@@ -514,15 +319,19 @@ input[type="date"] { cursor: pointer; }
     <p>Sistema de acompanhamento de discípulos</p>
 
     <div class="login-tabs">
-      <button class="login-tab active" onclick="switchLoginTab('disc')">Discipulador</button>
-      <button class="login-tab" onclick="switchLoginTab('admin')">Administrador</button>
+      <button class="login-tab active" onclick="switchLoginTab('disc', this)">Discipulador</button>
+      <button class="login-tab" onclick="switchLoginTab('admin', this)">Administrador</button>
     </div>
 
     <!-- Tab Discipulador -->
     <div id="login-disc-form">
       <div class="form-group">
-        <label>Código de Acesso</label>
-        <input type="text" id="inp-codigo" placeholder="Ex: DISC2024" style="text-transform:uppercase; letter-spacing:.1em;">
+        <label>Código de Acesso <span class="req">*</span></label>
+        <div class="pw-wrap">
+          <input type="password" id="inp-codigo" placeholder="Seu código secreto"
+            style="letter-spacing:.15em;" autocomplete="off">
+          <button class="pw-toggle" type="button" onclick="togglePw('inp-codigo', this)">👁</button>
+        </div>
       </div>
       <button class="btn btn-primary" onclick="fazerLogin()">
         <span id="btn-login-text">Entrar na Área de Discipulado</span>
@@ -532,43 +341,86 @@ input[type="date"] { cursor: pointer; }
     <!-- Tab Admin -->
     <div id="login-admin-form" style="display:none">
       <div class="form-group">
-        <label>Senha do Administrador</label>
-        <input type="password" id="inp-admin-senha" placeholder="••••••••">
+        <label>Senha do Administrador <span class="req">*</span></label>
+        <div class="pw-wrap">
+          <input type="password" id="inp-admin-senha" placeholder="••••••••" autocomplete="off">
+          <button class="pw-toggle" type="button" onclick="togglePw('inp-admin-senha', this)">👁</button>
+        </div>
       </div>
-      <button class="btn btn-primary" onclick="fazerLoginAdmin()">Entrar como Administrador</button>
+      <button class="btn btn-primary" id="btn-admin-login" onclick="fazerLoginAdmin()">Entrar como Administrador</button>
     </div>
 
     <p id="login-error" class="error-msg"></p>
-
-    <p style="margin-top:20px; font-size:12px; color:var(--text3);">
-      Não tem código? Fale com seu administrador.
-    </p>
+    <p style="margin-top:20px; font-size:12px; color:var(--text3);">Não tem código? Fale com seu administrador.</p>
   </div>
 </div>
 
 <!-- ══════════════ PÁGINA: ADMIN ══════════════ -->
 <div id="page-admin" class="page">
   <div class="topbar">
-    <span class="topbar-title">✝ Administração — Discipulado</span>
+    <span class="topbar-title">✝ Administração</span>
+    <div class="topbar-tabs">
+      <button class="topbar-tab active" onclick="switchAdminTab('discipuladores', this)">Discipuladores</button>
+      <button class="topbar-tab" onclick="switchAdminTab('disciplos', this)">Todos os Discípulos</button>
+    </div>
     <div class="topbar-right">
-      <button class="btn-topbar" onclick="abrirModalCadDisc()">+ Novo Discipulador</button>
+      <button class="btn-topbar" id="btn-novo-admin" onclick="abrirModalCadDisc()">+ Novo Discipulador</button>
       <button class="btn-topbar" onclick="sair()">Sair</button>
     </div>
   </div>
 
   <div class="admin-content">
-    <div class="section-header">
-      <h2>Discipuladores</h2>
-      <span id="count-disc" class="text-sm text-muted"></span>
+
+    <!-- Aba: Discipuladores -->
+    <div id="atab-discipuladores" class="admin-tab-panel active">
+      <div class="section-header">
+        <h2>Discipuladores</h2>
+        <span id="count-disc" class="text-sm text-muted"></span>
+      </div>
+      <div id="lista-discipuladores">
+        <div class="empty"><div class="empty-icon">👤</div><h4>Carregando...</h4></div>
+      </div>
     </div>
 
-    <div id="lista-discipuladores">
-      <div class="empty"><div class="empty-icon">👤</div><h4>Carregando...</h4></div>
+    <!-- Aba: Todos os Discípulos -->
+    <div id="atab-disciplos" class="admin-tab-panel">
+      <div class="section-header">
+        <h2>Todos os Discípulos</h2>
+        <span id="count-todos" class="text-sm text-muted"></span>
+      </div>
+
+      <div class="filtros">
+        <input type="text" id="f-nome" placeholder="🔍 Buscar por nome..." oninput="aplicarFiltros()">
+        <select id="f-discipulador" onchange="aplicarFiltros()">
+          <option value="">Todos os discipuladores</option>
+        </select>
+        <select id="f-eklesia" onchange="aplicarFiltros()">
+          <option value="">Todas as eklesías</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" onclick="limparFiltros()">Limpar</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="dtable">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Contato</th>
+              <th>Aniversário</th>
+              <th>Eklesia</th>
+              <th>Discipulador</th>
+              <th>Cadastro</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-todos"></tbody>
+        </table>
+      </div>
     </div>
+
   </div>
 </div>
 
-<!-- ══════════════ PÁGINA: ÁREA DO DISCIPULADOR ══════════════ -->
+<!-- ══════════════ PÁGINA: DISCIPULADOR ══════════════ -->
 <div id="page-disc" class="page">
   <div class="disc-topbar">
     <span style="font-family:'Playfair Display',serif; font-size:17px;">✝ Discipulado</span>
@@ -577,7 +429,6 @@ input[type="date"] { cursor: pointer; }
       <button class="btn-topbar" onclick="sair()">Sair</button>
     </div>
   </div>
-
   <div class="disc-area">
     <div class="welcome-card">
       <div class="welcome-text">
@@ -585,16 +436,12 @@ input[type="date"] { cursor: pointer; }
         <p>Gerencie seus discípulos e acompanhe o crescimento de cada um.</p>
       </div>
       <button class="btn" style="background:rgba(255,255,255,.2); color:#fff; border:1px solid rgba(255,255,255,.3);"
-        onclick="abrirModalCadDiscipulo()">
-        + Novo Discípulo
-      </button>
+        onclick="abrirModalCadDiscipulo()">+ Novo Discípulo</button>
     </div>
-
     <div class="section-header">
       <h2 style="font-size:19px; color:var(--primary);">Meus Discípulos</h2>
       <span id="count-disciplos" class="text-sm text-muted"></span>
     </div>
-
     <div id="lista-disciplos">
       <div class="empty"><div class="empty-icon">🙏</div><h4>Carregando...</h4></div>
     </div>
@@ -603,7 +450,7 @@ input[type="date"] { cursor: pointer; }
 
 <!-- ══════════════ MODAIS ══════════════ -->
 
-<!-- Modal: Cadastrar Discipulador (admin) -->
+<!-- Modal: Cadastrar Discipulador -->
 <div id="modal-cad-disc" class="modal-overlay">
   <div class="modal">
     <div class="modal-header">
@@ -612,7 +459,7 @@ input[type="date"] { cursor: pointer; }
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label>Nome Completo *</label>
+        <label>Nome Completo <span class="req">*</span></label>
         <input type="text" id="cad-disc-nome" placeholder="Nome do discipulador">
       </div>
       <div class="form-group">
@@ -620,7 +467,7 @@ input[type="date"] { cursor: pointer; }
         <input type="email" id="cad-disc-email" placeholder="email@exemplo.com">
       </div>
       <div class="form-group">
-        <label>Código de Acesso *</label>
+        <label>Código de Acesso <span class="req">*</span></label>
         <input type="text" id="cad-disc-codigo" placeholder="Ex: JOAO2024" style="text-transform:uppercase;"
           oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')">
         <p class="text-sm text-muted mt-1">Este código será usado para o discipulador fazer login.</p>
@@ -642,15 +489,16 @@ input[type="date"] { cursor: pointer; }
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label>Nome Completo *</label>
+        <label>Nome Completo <span class="req">*</span></label>
         <input type="text" id="disciplo-nome" placeholder="Nome completo do discípulo">
       </div>
       <div class="form-group">
-        <label>Contato</label>
-        <input type="text" id="disciplo-contato" placeholder="WhatsApp, telefone ou e-mail">
+        <label>Contato <span class="req">*</span></label>
+        <input type="tel" id="disciplo-contato" placeholder="(00) 00000-0000" maxlength="15"
+          oninput="mascararTelefone(this)">
       </div>
       <div class="form-group">
-        <label>Data de Aniversário</label>
+        <label>Data de Aniversário <span class="req">*</span></label>
         <input type="date" id="disciplo-aniversario">
       </div>
       <div class="form-group">
@@ -677,68 +525,58 @@ input[type="date"] { cursor: pointer; }
     </div>
     <div class="modal-body">
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('acomp')">Trilha de Discipulado</button>
-        <button class="tab-btn" onclick="switchTab('encontros')">Encontros DP</button>
-        <button class="tab-btn" onclick="switchTab('treinamentos')">Treinamentos e Leituras</button>
+        <button class="tab-btn active" onclick="switchTab('acomp', this)">Trilha</button>
+        <button class="tab-btn" onclick="switchTab('encontros', this)">Encontros DP</button>
+        <button class="tab-btn" onclick="switchTab('treinamentos', this)">Treinamentos e Leituras</button>
       </div>
 
-      <!-- Tab: Acompanhamento -->
       <div id="tab-acomp" class="tab-panel active">
         <div class="acomp-grid" id="acomp-grid"></div>
         <div style="text-align:right; margin-top:8px;">
-          <button class="btn btn-primary btn-sm" style="width:auto" onclick="salvarAcompanhamento()">
-            Salvar Trilha
-          </button>
+          <button class="btn btn-primary btn-sm" style="width:auto" onclick="salvarAcompanhamento()">Salvar Trilha</button>
         </div>
       </div>
 
-      <!-- Tab: Encontros -->
       <div id="tab-encontros" class="tab-panel">
         <div class="form-group">
-          <label>Data do Encontro</label>
+          <label>Data do Encontro <span class="req">*</span></label>
           <input type="date" id="enc-data">
         </div>
         <div class="form-group">
-          <label>Descrição do Encontro</label>
+          <label>Descrição <span class="req">*</span></label>
           <textarea id="enc-desc" placeholder="Descreva o que foi conversado, orado, estudado..."></textarea>
         </div>
         <div style="text-align:right; margin-bottom:20px;">
           <button class="btn btn-primary btn-sm" style="width:auto" onclick="salvarEncontro()">Registrar Encontro</button>
         </div>
-        <div id="lista-encontros">
-          <div class="empty"><p>Carregando...</p></div>
-        </div>
+        <div id="lista-encontros"></div>
       </div>
 
-      <!-- Tab: Treinamentos -->
       <div id="tab-treinamentos" class="tab-panel">
         <div class="form-group">
-          <label>Tipo</label>
+          <label>Tipo <span class="req">*</span></label>
           <select id="trein-tipo">
             <option value="Treinamento Ministerial">Treinamento Ministerial</option>
             <option value="Leitura">Leitura</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Data</label>
+          <label>Data <span class="req">*</span></label>
           <input type="date" id="trein-data">
         </div>
         <div class="form-group">
-          <label>Descrição / Título do Livro</label>
+          <label>Descrição / Título do Livro <span class="req">*</span></label>
           <textarea id="trein-desc" placeholder="Nome do livro lido, tema do treinamento..."></textarea>
         </div>
         <div style="text-align:right; margin-bottom:20px;">
           <button class="btn btn-primary btn-sm" style="width:auto" onclick="salvarTreinamento()">Registrar</button>
         </div>
-        <div id="lista-treinamentos">
-          <div class="empty"><p>Carregando...</p></div>
-        </div>
+        <div id="lista-treinamentos"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
@@ -754,27 +592,28 @@ let estado = {
   discipulador: null,
   discipuloAtivo: null,
   acompAtivo: {},
-  adminSenha: null   // guardada apenas em memória durante a sessão
+  adminSenha: null,
+  todosDiscipulos: [],
+  todosDiscipuladores: []
 };
 
 const ITENS_ACOMP = [
-  { key: 'Batismo',          label: 'Batismo' },
-  { key: 'BemVindo',         label: 'Bem-vindo à Família' },
-  { key: 'VidaPropósito',    label: 'Vida com Propósito' },
-  { key: 'VidaSatisfeita',   label: 'Vida Satisfeita' },
-  { key: 'TrintaSemanas',    label: '30 Semanas' },
-  { key: 'CulturaIgreja',    label: 'Cultura da Igreja' },
-  { key: 'FundamentosFé',    label: 'Fundamentos da Fé' },
-  { key: 'Restauração',      label: 'Restauração' },
-  { key: 'Feminina',         label: 'Feminina' },
-  { key: 'CursoLiderança',   label: 'Curso Liderança de GDC' }
+  { key: 'Batismo',         label: 'Batismo' },
+  { key: 'BemVindo',        label: 'Bem-vindo à Família' },
+  { key: 'VidaPropósito',   label: 'Vida com Propósito' },
+  { key: 'VidaSatisfeita',  label: 'Vida Satisfeita' },
+  { key: 'TrintaSemanas',   label: '30 Semanas' },
+  { key: 'CulturaIgreja',   label: 'Cultura da Igreja' },
+  { key: 'FundamentosFé',   label: 'Fundamentos da Fé' },
+  { key: 'Restauração',     label: 'Restauração' },
+  { key: 'Feminina',        label: 'Feminina' },
+  { key: 'CursoLiderança',  label: 'Curso Liderança de GDC' }
 ];
 
 // ════════════════════════════════════════════════
 //  API
 // ════════════════════════════════════════════════
 async function api(acao, body = {}) {
-  // Apps Script requer GET com payload em base64 para evitar CORS preflight
   const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ acao, ...body }))));
   const url = API_URL + '?payload=' + encodeURIComponent(payload);
   const resp = await fetch(url, { method: 'GET', redirect: 'follow' });
@@ -784,61 +623,26 @@ async function api(acao, body = {}) {
 }
 
 // ════════════════════════════════════════════════
-//  LOGIN
+//  MÁSCARA TELEFONE
 // ════════════════════════════════════════════════
-function switchLoginTab(tab) {
-  document.querySelectorAll('.login-tab').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('login-disc-form').style.display = tab === 'disc' ? 'block' : 'none';
-  document.getElementById('login-admin-form').style.display = tab === 'admin' ? 'block' : 'none';
-  document.getElementById('login-error').textContent = '';
-}
-
-async function fazerLogin() {
-  const codigo = document.getElementById('inp-codigo').value.trim().toUpperCase();
-  if (!codigo) { mostrarErroLogin('Informe o código de acesso.'); return; }
-
-  document.getElementById('btn-login-text').innerHTML = '<span class="spinner"></span>';
-  try {
-    const r = await api('loginDiscipulador', { codigo });
-    if (!r.ok) { mostrarErroLogin(r.msg || 'Código inválido.'); return; }
-
-    estado.discipulador = r.discipulador;
-    irPara('disc');
-    carregarDiscipulos();
-  } catch(e) {
-    mostrarErroLogin('Erro de conexão. Verifique a URL da API.');
-  } finally {
-    document.getElementById('btn-login-text').textContent = 'Entrar na Área de Discipulado';
+function mascararTelefone(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 11);
+  if (v.length <= 10) {
+    v = v.replace(/^(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+  } else {
+    v = v.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
   }
+  el.value = v.replace(/-$/, '');
 }
 
-async function fazerLoginAdmin() {
-  const senha = document.getElementById('inp-admin-senha').value.trim();
-  if (!senha) { mostrarErroLogin('Informe a senha.'); return; }
-
-  const btnAdmin = document.querySelector('#login-admin-form .btn-primary');
-  const orig = btnAdmin.textContent;
-  btnAdmin.innerHTML = '<span class="spinner"></span>';
-  try {
-    const r = await api('loginAdmin', { senha });
-    if (!r.ok) { mostrarErroLogin(r.msg || 'Senha incorreta.'); return; }
-    estado.adminSenha = senha;   // guarda em memória para reenviar nas ações protegidas
-    irPara('admin');
-    carregarDiscipuladores();
-  } catch(e) {
-    mostrarErroLogin('Erro de conexão. Verifique a URL da API.');
-  } finally {
-    btnAdmin.textContent = orig;
-  }
+// ════════════════════════════════════════════════
+//  TOGGLE SENHA
+// ════════════════════════════════════════════════
+function togglePw(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁'; }
 }
-
-function mostrarErroLogin(msg) {
-  document.getElementById('login-error').textContent = msg;
-}
-
-document.getElementById('inp-codigo').addEventListener('keydown', e => { if(e.key==='Enter') fazerLogin(); });
-document.getElementById('inp-admin-senha').addEventListener('keydown', e => { if(e.key==='Enter') fazerLoginAdmin(); });
 
 // ════════════════════════════════════════════════
 //  NAVEGAÇÃO
@@ -849,11 +653,71 @@ function irPara(pagina) {
 }
 
 function sair() {
-  estado = { discipulador: null, discipuloAtivo: null, acompAtivo: {}, adminSenha: null };
+  estado = { discipulador: null, discipuloAtivo: null, acompAtivo: {}, adminSenha: null, todosDiscipulos: [], todosDiscipuladores: [] };
   document.getElementById('inp-codigo').value = '';
   document.getElementById('inp-admin-senha').value = '';
   document.getElementById('login-error').textContent = '';
   irPara('login');
+}
+
+// ════════════════════════════════════════════════
+//  LOGIN
+// ════════════════════════════════════════════════
+function switchLoginTab(tab, btn) {
+  document.querySelectorAll('.login-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('login-disc-form').style.display  = tab === 'disc'  ? 'block' : 'none';
+  document.getElementById('login-admin-form').style.display = tab === 'admin' ? 'block' : 'none';
+  document.getElementById('login-error').textContent = '';
+}
+
+async function fazerLogin() {
+  const codigo = document.getElementById('inp-codigo').value.trim().toUpperCase();
+  if (!codigo) { mostrarErroLogin('Informe o código de acesso.'); return; }
+  const btn = document.getElementById('btn-login-text');
+  btn.innerHTML = '<span class="spinner"></span>';
+  try {
+    const r = await api('loginDiscipulador', { codigo });
+    if (!r.ok) { mostrarErroLogin(r.msg || 'Código inválido.'); return; }
+    estado.discipulador = r.discipulador;
+    irPara('disc');
+    carregarDiscipulos();
+  } catch(e) { mostrarErroLogin('Erro de conexão. Verifique a URL da API.'); }
+  finally { btn.textContent = 'Entrar na Área de Discipulado'; }
+}
+
+async function fazerLoginAdmin() {
+  const senha = document.getElementById('inp-admin-senha').value.trim();
+  if (!senha) { mostrarErroLogin('Informe a senha.'); return; }
+  const btn = document.getElementById('btn-admin-login');
+  const orig = btn.textContent;
+  btn.innerHTML = '<span class="spinner"></span>';
+  try {
+    const r = await api('loginAdmin', { senha });
+    if (!r.ok) { mostrarErroLogin(r.msg || 'Senha incorreta.'); return; }
+    estado.adminSenha = senha;
+    irPara('admin');
+    switchAdminTab('discipuladores', document.querySelector('.topbar-tab'));
+    carregarDiscipuladores();
+  } catch(e) { mostrarErroLogin('Erro de conexão. Verifique a URL da API.'); }
+  finally { btn.textContent = orig; }
+}
+
+function mostrarErroLogin(msg) { document.getElementById('login-error').textContent = msg; }
+
+document.getElementById('inp-codigo').addEventListener('keydown', e => { if(e.key==='Enter') fazerLogin(); });
+document.getElementById('inp-admin-senha').addEventListener('keydown', e => { if(e.key==='Enter') fazerLoginAdmin(); });
+
+// ════════════════════════════════════════════════
+//  ADMIN TABS
+// ════════════════════════════════════════════════
+function switchAdminTab(tab, btn) {
+  document.querySelectorAll('.topbar-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.admin-tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('atab-' + tab).classList.add('active');
+  document.getElementById('btn-novo-admin').style.display = tab === 'discipuladores' ? 'block' : 'none';
+  if (tab === 'disciplos') carregarTodosDiscipulos();
 }
 
 // ════════════════════════════════════════════════
@@ -862,6 +726,7 @@ function sair() {
 async function carregarDiscipuladores() {
   const r = await api('listarDiscipuladores', { adminSenha: estado.adminSenha });
   const lista = r.dados || [];
+  estado.todosDiscipuladores = lista;
   document.getElementById('count-disc').textContent = lista.length + ' discipuladores';
 
   const el = document.getElementById('lista-discipuladores');
@@ -869,7 +734,6 @@ async function carregarDiscipuladores() {
     el.innerHTML = `<div class="empty"><div class="empty-icon">👤</div><h4>Nenhum discipulador cadastrado</h4><p>Clique em "+ Novo Discipulador" para começar.</p></div>`;
     return;
   }
-
   el.innerHTML = lista.map(d => `
     <div class="disc-item">
       <div class="disc-info">
@@ -892,22 +756,94 @@ function abrirModalCadDisc() {
 }
 
 async function salvarDiscipulador() {
-  const nome  = document.getElementById('cad-disc-nome').value.trim();
-  const email = document.getElementById('cad-disc-email').value.trim();
-  const codigo= document.getElementById('cad-disc-codigo').value.trim().toUpperCase();
-
+  const nome   = document.getElementById('cad-disc-nome').value.trim();
+  const email  = document.getElementById('cad-disc-email').value.trim();
+  const codigo = document.getElementById('cad-disc-codigo').value.trim().toUpperCase();
   if (!nome || !codigo) { toast('Preencha nome e código.', true); return; }
-
   const r = await api('cadastrarDiscipulador', { nome, email, codigoChave: codigo, adminSenha: estado.adminSenha });
   if (!r.ok) { toast(r.msg || 'Erro ao salvar.', true); return; }
-
-  toast('Discipulador cadastrado com sucesso!');
+  toast('Discipulador cadastrado!');
   fecharModal('modal-cad-disc');
   carregarDiscipuladores();
 }
 
 // ════════════════════════════════════════════════
-//  ÁREA DO DISCIPULADOR — DISCÍPULOS
+//  ADMIN — TODOS OS DISCÍPULOS
+// ════════════════════════════════════════════════
+async function carregarTodosDiscipulos() {
+  document.getElementById('tbody-todos').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">Carregando...</td></tr>';
+  // Busca discípulos de todos os discipuladores
+  const rDisc = await api('listarDiscipuladores', { adminSenha: estado.adminSenha });
+  const discipuladores = rDisc.dados || [];
+  estado.todosDiscipuladores = discipuladores;
+
+  // Popula filtro de discipuladores
+  const selDisc = document.getElementById('f-discipulador');
+  selDisc.innerHTML = '<option value="">Todos os discipuladores</option>' +
+    discipuladores.map(d => `<option value="${d.ID}">${d.Nome}</option>`).join('');
+
+  // Busca todos os discípulos
+  let todos = [];
+  for (const disc of discipuladores) {
+    const r = await api('listarDiscipulos', { discipuladorId: disc.ID });
+    const lista = (r.dados || []).map(d => ({ ...d, _discipuladorNome: disc.Nome }));
+    todos = todos.concat(lista);
+  }
+  estado.todosDiscipulos = todos;
+  document.getElementById('count-todos').textContent = todos.length + ' discípulos';
+
+  // Popula filtro de eklesia
+  const eklesías = [...new Set(todos.map(d => d.Eklesia).filter(Boolean))].sort();
+  const selEk = document.getElementById('f-eklesia');
+  selEk.innerHTML = '<option value="">Todas as eklesías</option>' +
+    eklesías.map(e => `<option value="${e}">${e}</option>`).join('');
+
+  renderizarTabela(todos);
+}
+
+function renderizarTabela(lista) {
+  const tbody = document.getElementById('tbody-todos');
+  if (!lista.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">Nenhum resultado encontrado.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = lista.map(d => `
+    <tr>
+      <td><strong>${d.NomeCompleto}</strong></td>
+      <td>${d.Contato || '—'}</td>
+      <td>${d.DataAniversario ? formatarDataBR(d.DataAniversario) : '—'}</td>
+      <td>${d.Eklesia || '—'}</td>
+      <td>${d._discipuladorNome || '—'}</td>
+      <td>${d.DataCadastro ? formatarDataBR(d.DataCadastro) : '—'}</td>
+    </tr>
+  `).join('');
+}
+
+function aplicarFiltros() {
+  const nome = document.getElementById('f-nome').value.toLowerCase();
+  const discId = document.getElementById('f-discipulador').value;
+  const eklesia = document.getElementById('f-eklesia').value;
+
+  const filtrado = estado.todosDiscipulos.filter(d => {
+    const matchNome = !nome || d.NomeCompleto.toLowerCase().includes(nome);
+    const matchDisc = !discId || d.DiscipuladorID === discId;
+    const matchEk   = !eklesia || d.Eklesia === eklesia;
+    return matchNome && matchDisc && matchEk;
+  });
+
+  document.getElementById('count-todos').textContent = filtrado.length + ' discípulos';
+  renderizarTabela(filtrado);
+}
+
+function limparFiltros() {
+  document.getElementById('f-nome').value = '';
+  document.getElementById('f-discipulador').value = '';
+  document.getElementById('f-eklesia').value = '';
+  aplicarFiltros();
+}
+
+// ════════════════════════════════════════════════
+//  DISCIPULADOR — DISCÍPULOS
 // ════════════════════════════════════════════════
 async function carregarDiscipulos() {
   document.getElementById('disc-nome-welcome').textContent = estado.discipulador.nome.split(' ')[0];
@@ -922,7 +858,6 @@ async function carregarDiscipulos() {
     el.innerHTML = `<div class="empty"><div class="empty-icon">🌱</div><h4>Nenhum discípulo cadastrado</h4><p>Clique em "+ Novo Discípulo" para começar.</p></div>`;
     return;
   }
-
   el.innerHTML = lista.map(d => `
     <div class="disciplo-card" onclick="abrirPerfil(${JSON.stringify(d).replace(/"/g,'&quot;')})">
       <div class="disciplo-header">
@@ -931,9 +866,7 @@ async function carregarDiscipulos() {
           <div>
             <div class="disc-name">${d.NomeCompleto}</div>
             <div class="disc-sub">
-              ${d.Eklesia ? d.Eklesia + ' · ' : ''}
-              ${d.Contato ? d.Contato : ''}
-              ${d.DataAniversario ? ' · 🎂 ' + formatarDataBR(d.DataAniversario) : ''}
+              ${d.Eklesia ? d.Eklesia + ' · ' : ''}${d.Contato || ''}${d.DataAniversario ? ' · 🎂 ' + formatarDataBR(d.DataAniversario) : ''}
             </div>
           </div>
         </div>
@@ -952,20 +885,20 @@ function abrirModalCadDiscipulo() {
 }
 
 async function salvarDiscipulo() {
-  const nome          = document.getElementById('disciplo-nome').value.trim();
-  const contato       = document.getElementById('disciplo-contato').value.trim();
-  const dataAniversario = document.getElementById('disciplo-aniversario').value;
-  const eklesia       = document.getElementById('disciplo-eklesia').value.trim();
+  const nome     = document.getElementById('disciplo-nome').value.trim();
+  const contato  = document.getElementById('disciplo-contato').value.trim();
+  const aniv     = document.getElementById('disciplo-aniversario').value;
+  const eklesia  = document.getElementById('disciplo-eklesia').value.trim();
 
-  if (!nome) { toast('Informe o nome completo.', true); return; }
+  if (!nome)    { toast('Nome completo é obrigatório.', true); return; }
+  if (!contato) { toast('Contato é obrigatório.', true); return; }
+  if (!aniv)    { toast('Data de aniversário é obrigatória.', true); return; }
 
   const r = await api('cadastrarDiscipulo', {
     discipuladorId: estado.discipulador.id,
-    nomeCompleto: nome, contato, dataAniversario, eklesia
+    nomeCompleto: nome, contato, dataAniversario: aniv, eklesia
   });
-
   if (!r.ok) { toast(r.msg || 'Erro ao cadastrar.', true); return; }
-
   toast('Discípulo cadastrado!');
   fecharModal('modal-cad-disciplo');
   carregarDiscipulos();
@@ -977,18 +910,11 @@ async function salvarDiscipulo() {
 async function abrirPerfil(disciplo) {
   estado.discipuloAtivo = disciplo;
   document.getElementById('perfil-nome').textContent = disciplo.NomeCompleto;
-  document.getElementById('perfil-sub').textContent =
-    [disciplo.Eklesia, disciplo.Contato].filter(Boolean).join(' · ');
-
-  // Definir data padrão dos campos de encontro/treinamento
+  document.getElementById('perfil-sub').textContent = [disciplo.Eklesia, disciplo.Contato].filter(Boolean).join(' · ');
   document.getElementById('enc-data').value = hoje();
   document.getElementById('trein-data').value = hoje();
-
-  // Ativar tab inicial
-  switchTab('acomp');
+  switchTab('acomp', document.querySelector('.tab-btn'));
   abrirModal('modal-perfil');
-
-  // Carregar dados
   await carregarAcompanhamento(disciplo.ID);
   carregarEncontros(disciplo.ID);
   carregarTreinamentos(disciplo.ID);
@@ -1003,21 +929,17 @@ async function carregarAcompanhamento(discipuloId) {
 
 function renderizarAcomp() {
   const d = estado.acompAtivo;
-  const grid = document.getElementById('acomp-grid');
-
-  grid.innerHTML = ITENS_ACOMP.map(item => {
+  document.getElementById('acomp-grid').innerHTML = ITENS_ACOMP.map(item => {
     const inicio = d[item.key + '_Inicio'] || '';
     const fim    = d[item.key + '_Fim']    || '';
-
-    let statusCls = 'status-nao', statusTxt = 'Não iniciado';
-    if (inicio && fim)   { statusCls = 'status-ok'; statusTxt = 'Concluído'; }
-    else if (inicio)     { statusCls = 'status-em'; statusTxt = 'Em andamento'; }
-
+    let cls = 'status-nao', txt = 'Não iniciado';
+    if (inicio && fim)  { cls = 'status-ok'; txt = 'Concluído'; }
+    else if (inicio)    { cls = 'status-em'; txt = 'Em andamento'; }
     return `
       <div class="acomp-item" id="acomp-${item.key}">
         <div class="acomp-item-header">
           <span class="acomp-item-title">${item.label}</span>
-          <span class="status-badge ${statusCls}">${statusTxt}</span>
+          <span class="status-badge ${cls}">${txt}</span>
         </div>
         <div class="date-row">
           <div class="date-col">
@@ -1032,42 +954,22 @@ function renderizarAcomp() {
               ${!inicio ? 'disabled title="Informe a data de início primeiro"' : ''}>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 
 function atualizarStatusAcomp(key) {
   const inicio = document.getElementById('inp-' + key + '-inicio').value;
   const fimInp = document.getElementById('inp-' + key + '-fim');
-
-  // Bloqueia término sem início
-  if (!inicio) {
-    fimInp.disabled = true;
-    fimInp.value = '';
-    toast('Informe a data de início primeiro.', true);
-  } else {
-    fimInp.disabled = false;
-  }
-
-  // Valida término não antes do início
+  if (!inicio) { fimInp.disabled = true; fimInp.value = ''; toast('Informe a data de início primeiro.', true); }
+  else { fimInp.disabled = false; }
   const fim = fimInp.value;
-  if (inicio && fim && fim < inicio) {
-    fimInp.value = '';
-    toast('A data de término não pode ser antes do início.', true);
-    return;
-  }
-
-  // Atualiza badge
-  let statusCls = 'status-nao', statusTxt = 'Não iniciado';
-  if (inicio && fim)   { statusCls = 'status-ok'; statusTxt = 'Concluído'; }
-  else if (inicio)     { statusCls = 'status-em'; statusTxt = 'Em andamento'; }
-
+  if (inicio && fim && fim < inicio) { fimInp.value = ''; toast('Término não pode ser antes do início.', true); return; }
+  let cls = 'status-nao', txt = 'Não iniciado';
+  if (inicio && fim)  { cls = 'status-ok'; txt = 'Concluído'; }
+  else if (inicio)    { cls = 'status-em'; txt = 'Em andamento'; }
   const badge = document.querySelector('#acomp-' + key + ' .status-badge');
-  if (badge) {
-    badge.className = 'status-badge ' + statusCls;
-    badge.textContent = statusTxt;
-  }
+  if (badge) { badge.className = 'status-badge ' + cls; badge.textContent = txt; }
 }
 
 async function salvarAcompanhamento() {
@@ -1076,14 +978,9 @@ async function salvarAcompanhamento() {
     campos[item.key + '_Inicio'] = document.getElementById('inp-' + item.key + '-inicio').value;
     campos[item.key + '_Fim']    = document.getElementById('inp-' + item.key + '-fim').value;
   });
-
-  const r = await api('salvarAcompanhamento', {
-    discipuloId: estado.discipuloAtivo.ID,
-    campos
-  });
-
+  const r = await api('salvarAcompanhamento', { discipuloId: estado.discipuloAtivo.ID, campos });
   if (!r.ok) { toast(r.msg || 'Erro ao salvar.', true); return; }
-  toast('Trilha de discipulado salva!');
+  toast('Trilha salva!');
 }
 
 // ── Encontros ──
@@ -1091,32 +988,18 @@ async function carregarEncontros(discipuloId) {
   const r = await api('listarEncontros', { discipuloId });
   const lista = r.dados || [];
   const el = document.getElementById('lista-encontros');
-
-  if (!lista.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">📖</div><h4>Nenhum encontro registrado ainda</h4></div>`;
-    return;
-  }
-
-  el.innerHTML = lista.map(e => `
-    <div class="encontro-item">
-      <div class="encontro-date">${formatarDataBR(e.Data)}</div>
-      <div class="encontro-desc">${e.Descricao}</div>
-    </div>
-  `).join('');
+  el.innerHTML = lista.length
+    ? lista.map(e => `<div class="encontro-item"><div class="encontro-date">${formatarDataBR(e.Data)}</div><div class="encontro-desc">${e.Descricao}</div></div>`).join('')
+    : `<div class="empty"><div class="empty-icon">📖</div><h4>Nenhum encontro registrado ainda</h4></div>`;
 }
 
 async function salvarEncontro() {
   const data = document.getElementById('enc-data').value;
   const desc = document.getElementById('enc-desc').value.trim();
-
+  if (!data) { toast('Informe a data do encontro.', true); return; }
   if (!desc) { toast('Descreva o encontro.', true); return; }
-
-  const r = await api('salvarEncontro', {
-    discipuloId: estado.discipuloAtivo.ID, data, descricao: desc
-  });
-
+  const r = await api('salvarEncontro', { discipuloId: estado.discipuloAtivo.ID, data, descricao: desc });
   if (!r.ok) { toast(r.msg || 'Erro.', true); return; }
-
   toast('Encontro registrado!');
   document.getElementById('enc-desc').value = '';
   carregarEncontros(estado.discipuloAtivo.ID);
@@ -1127,36 +1010,19 @@ async function carregarTreinamentos(discipuloId) {
   const r = await api('listarTreinamentos', { discipuloId });
   const lista = r.dados || [];
   const el = document.getElementById('lista-treinamentos');
-
-  if (!lista.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">📚</div><h4>Nenhum treinamento registrado ainda</h4></div>`;
-    return;
-  }
-
-  el.innerHTML = lista.map(t => `
-    <div class="trein-item">
-      <div class="trein-header">
-        <span class="trein-tipo">${t.Tipo}</span>
-        <span class="trein-date">${formatarDataBR(t.Data)}</span>
-      </div>
-      <div class="trein-desc">${t.Descricao}</div>
-    </div>
-  `).join('');
+  el.innerHTML = lista.length
+    ? lista.map(t => `<div class="trein-item"><div class="trein-header"><span class="trein-tipo">${t.Tipo}</span><span class="trein-date">${formatarDataBR(t.Data)}</span></div><div class="trein-desc">${t.Descricao}</div></div>`).join('')
+    : `<div class="empty"><div class="empty-icon">📚</div><h4>Nenhum treinamento registrado ainda</h4></div>`;
 }
 
 async function salvarTreinamento() {
   const tipo = document.getElementById('trein-tipo').value;
   const data = document.getElementById('trein-data').value;
   const desc = document.getElementById('trein-desc').value.trim();
-
+  if (!data) { toast('Informe a data.', true); return; }
   if (!desc) { toast('Descreva o treinamento ou livro.', true); return; }
-
-  const r = await api('salvarTreinamento', {
-    discipuloId: estado.discipuloAtivo.ID, tipo, data, descricao: desc
-  });
-
+  const r = await api('salvarTreinamento', { discipuloId: estado.discipuloAtivo.ID, tipo, data, descricao: desc });
   if (!r.ok) { toast(r.msg || 'Erro.', true); return; }
-
   toast('Registrado!');
   document.getElementById('trein-desc').value = '';
   carregarTreinamentos(estado.discipuloAtivo.ID);
@@ -1165,30 +1031,24 @@ async function salvarTreinamento() {
 // ════════════════════════════════════════════════
 //  TABS
 // ════════════════════════════════════════════════
-function switchTab(tab) {
+function switchTab(tab, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
-  event.target.classList.add('active');
+  if (btn) btn.classList.add('active');
+  else {
+    const b = document.querySelector(`.tab-btn[onclick*="'${tab}'"]`);
+    if (b) b.classList.add('active');
+  }
 }
 
 // ════════════════════════════════════════════════
 //  MODAIS
 // ════════════════════════════════════════════════
-function abrirModal(id) {
-  document.getElementById(id).classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function fecharModal(id) {
-  document.getElementById(id).classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay) fecharModal(overlay.id);
-  });
+function abrirModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
+function fecharModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) fecharModal(o.id); });
 });
 
 // ════════════════════════════════════════════════
@@ -1198,17 +1058,12 @@ function iniciais(nome) {
   if (!nome) return '?';
   return nome.split(' ').filter(Boolean).slice(0,2).map(n => n[0].toUpperCase()).join('');
 }
-
 function formatarDataBR(data) {
   if (!data) return '—';
-  const partes = String(data).split('-');
-  if (partes.length === 3) return partes[2] + '/' + partes[1] + '/' + partes[0];
-  return data;
+  const p = String(data).split('-');
+  return p.length === 3 ? p[2]+'/'+p[1]+'/'+p[0] : data;
 }
-
-function hoje() {
-  return new Date().toISOString().split('T')[0];
-}
+function hoje() { return new Date().toISOString().split('T')[0]; }
 
 let toastTimer;
 function toast(msg, erro = false) {
